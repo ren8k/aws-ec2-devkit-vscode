@@ -1,0 +1,64 @@
+{
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	// "image": "nvcr.io/nvidia/pytorch:22.08-py3",
+	"runArgs": [
+		"--name", "pytorch_dl_programming",	// コンテナの名前を指定
+		"--gpus", "all",		// GPUの利用
+		"--shm-size", "32g",	// shared memoryのサイズ指定
+		"-v", "src:/workspace/my_src",	// ディレクトリの共有
+		"-it",	// ターミナルを利用するためのオプション
+		// "--rm"	// コンテナから抜けるとコンテナを自動削除。コンテナを再利用したければコメントアウト
+	],
+	"name": "pytorch_deeplearning_programming",
+	// "workspaceFolder": "/workspaces",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"extensions": [
+				"alefragnani.project-manager",
+				"batisteo.vscode-django",
+				"codezombiech.gitignore",
+				"donjayamanne.git-extension-pack",
+				"donjayamanne.githistory",
+				"donjayamanne.python-environment-manager",
+				"donjayamanne.python-extension-pack",
+				"eamodio.gitlens",
+				"emilast.LogFileHighlighter",
+				"esbenp.prettier-vscode",
+				"GrapeCity.gc-excelviewer",
+				"IBM.output-colorizer",
+				"ionutvmi.path-autocomplete",
+				"James-Yu.latex-workshop",
+				"Kelvin.vscode-sshfs",
+				"KevinRose.vsc-python-indent",
+				"mechatroner.rainbow-csv",
+				"mhutchie.git-graph",
+				"monokai.theme-monokai-pro-vscode",
+				"ms-azuretools.vscode-docker",
+				"MS-CEINTL.vscode-language-pack-ja",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-keymap",
+				"ms-toolsai.jupyter-renderers",
+				"ms-vscode-remote.remote-containers",
+				"ms-vscode-remote.remote-ssh",
+				"ms-vscode-remote.remote-ssh-edit",
+				"ms-vscode-remote.remote-wsl",
+				"ms-vscode-remote.vscode-remote-extensionpack",
+				"njpwerner.autodocstring",
+				"patricklee.vsnotes",
+				"shd101wyy.markdown-preview-enhanced",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"vscode-icons-team.vscode-icons",
+				"wholroyd.jinja",
+				"yzhang.markdown-all-in-one",
+				"ziyasal.vscode-open-in-github",
+			]
+		}
+	},
+}
