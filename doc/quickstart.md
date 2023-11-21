@@ -12,7 +12,7 @@ Windows 上には VScode は install されているものとする．
 1. AWS CLI のインストールと設定
 2. SSM Session Manager plugin のインストール
 3. ローカルの VSCode に extension をインストール
-4. cloudformation で，EC2 を構築
+4. CloudFormation で，EC2 を構築
 5. `./setup/get_aws_keypair/get_key_linux.sh`を実行し，秘密鍵をダウンロード（4 の出力を利用）
 6. `/.ssh/config_linux`を自身の`.ssh/config`にコピーし，インスタンス ID や秘密鍵のパスを設定（4 の出力を利用）
 7. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
@@ -26,7 +26,7 @@ Windows 上には VScode は install されているものとする．
 
 ### 3. ローカルの VSCode に extension をインストール
 
-### 4. Cloudformation で，EC2 を構築
+### 4. CloudFormation で，EC2 を構築
 
 - VPC とサブネットの ID をユーザー側で記述する必要あり
   - default vpc のパブリックサブネット等を選択すれば良い
