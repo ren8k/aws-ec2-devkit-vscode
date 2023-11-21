@@ -17,11 +17,6 @@ Parameters:
     Type: String
     Default: 100
 
-  KeyName:
-    Description: Keypair name
-    Type: String
-    Default: my-key
-
   VPCId:
     Description: VPC ID where the instance will be launched
     Type: String
@@ -51,9 +46,10 @@ Resources:
         - "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
         - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
         - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+      RoleName: !Sub "${AWS::StackName}-cf-remote-development-role"
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-remote-development-role"
+          Value: !Sub "${AWS::StackName}-cf-remote-development-role"
 
   # IAM Instance Profile
   EC2InstanceProfile:
@@ -66,10 +62,10 @@ Resources:
   NewKeyPair:
     Type: "AWS::EC2::KeyPair"
     Properties:
-      KeyName: !Ref "KeyName"
+      KeyName: !Sub "${AWS::StackName}-cf-key"
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-key"
+          Value: !Sub "${AWS::StackName}-cf-key"
 
   # Security Group
   EC2SecurityGroup:
@@ -77,7 +73,7 @@ Resources:
     Properties:
       VpcId: !Ref VPCId
       GroupDescription: for remote development
-      GroupName: !Sub "${AWS::StackName}-sg"
+      GroupName: !Sub "${AWS::StackName}-cf-sg"
       SecurityGroupEgress:
         - CidrIp: 0.0.0.0/0
           FromPort: -1
@@ -85,7 +81,7 @@ Resources:
           ToPort: -1
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-sg"
+          Value: !Sub "${AWS::StackName}-cf-sg"
 
   # EC2 Instance
   EC2Instance:
@@ -106,9 +102,17 @@ Resources:
             VolumeSize: !Ref "VolumeSize"
             DeleteOnTermination: "true"
             Encrypted: "false"
+      # upgrade git
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          sudo -E add-apt-repository ppa:git-core/ppa -y
+          sudo apt-get update && sudo apt-get -y upgrade
+          git config --global init.defaultBranch main
+          sudo reboot
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-ec2"
+          Value: !Sub "${AWS::StackName}-cf-ec2"
 
 Outputs:
   InstanceId:
