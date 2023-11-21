@@ -5,7 +5,7 @@ Parameters:
   ImageId:
     Description: Amazon Machine Image (AMI)
     Type: String
-    Default: ami-06c414f3ba4a59e2f
+    Default: ami-05494db6fe40e0cfd
 
   EC2InstanceType:
     Description: EC2 instance type on which IDE runs
@@ -22,17 +22,46 @@ Parameters:
     Type: String
     Default: my-key
 
+  VPCId:
+    Description: VPC ID where the instance will be launched
+    Type: String
+    Default: vpc-XXXXXXXXXXXXXXXXX
+
   SubnetId:
     Description: Public subnet in vpc (For example, check your pucblic-subnet ip in default vpc.)
     Type: String
     Default: subnet-XXXXXXXXXXXXXXXXX
 
-  EC2IAMInstanceProfile:
-    Description: IAM Instance Profile
-    Type: String
-    Default: arn:aws:iam::XXXXXXXXXXXX:instance-profile/existing-role-profile
-
 Resources:
+  # IAM Role
+  EC2InstanceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ec2.amazonaws.com]
+            Action: ["sts:AssumeRole"]
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/AWSCodeCommitFullAccess"
+        - "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
+        - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+        - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-remote-development-role"
+
+  # IAM Instance Profile
+  EC2InstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
+
   # EC2 Key pair
   NewKeyPair:
     Type: "AWS::EC2::KeyPair"
@@ -43,9 +72,10 @@ Resources:
           Value: !Sub "${AWS::StackName}-key"
 
   # Security Group
-  Ec2SecurityGroup:
+  EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      VpcId: !Ref VPCId
       GroupDescription: for remote development
       GroupName: !Sub "${AWS::StackName}-sg"
       SecurityGroupEgress:
@@ -58,7 +88,7 @@ Resources:
           Value: !Sub "${AWS::StackName}-sg"
 
   # EC2 Instance
-  Instance:
+  EC2Instance:
     Type: "AWS::EC2::Instance"
     Properties:
       AvailabilityZone: "ap-northeast-1a"
@@ -66,9 +96,9 @@ Resources:
       InstanceType: !Ref "EC2InstanceType"
       KeyName: !Ref "NewKeyPair"
       SecurityGroupIds:
-        - !GetAtt [Ec2SecurityGroup, GroupId]
+        - !GetAtt [EC2SecurityGroup, GroupId]
       SubnetId: !Ref "SubnetId"
-      IamInstanceProfile: !Ref "EC2IAMInstanceProfile"
+      IamInstanceProfile: !Ref "EC2InstanceProfile"
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
@@ -79,3 +109,11 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-ec2"
+
+Outputs:
+  InstanceId:
+    Description: The Instance ID
+    Value: !Ref EC2Instance
+  InstanceRoleArn:
+    Description: The Instance Role ARN
+    Value: !GetAtt EC2InstanceRole.Arn
