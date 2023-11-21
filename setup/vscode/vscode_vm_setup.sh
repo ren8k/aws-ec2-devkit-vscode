@@ -43,4 +43,6 @@ code --install-extension vscode-icons-team.vscode-icons
 code --install-extension MS-CEINTL.vscode-language-pack-ja
 
 # vscode settings
-cp vs_code_settings.json ~/.vscode-server/data/Machine/settings.json
+cp vscode_settings.json ~/.vscode-server/data/Machine/settings.json
+
+echo finish
