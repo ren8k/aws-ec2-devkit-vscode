@@ -1,78 +1,80 @@
 {
 	"name": "pj-name", // set your pj name
 	"build": {
-	  "dockerfile": "Dockerfile"
+		"dockerfile": "Dockerfile"
 	},
 	"workspaceFolder": "/app/pj-name", // set your pj name suffix
 	"workspaceMount": "source=${localWorkspaceFolder},target=/app/pj-name,type=bind,consistency=cached", // set your pj name suffix in target
-
+	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
+	"runArgs": [
+		"--name", "kgl",
+		"--gpus", "all",
+		"--shm-size", "32g", // shared memory size
+	],
 	// Configure tool-specific properties.
 	"customizations": {
-	  // Configure properties specific to VS Code.
-	  "vscode": {
-		"settings": {
-		  "terminal.integrated.profiles.linux": {
-			"bash": {
-			  "path": "/bin/bash"
-			}
-		  },
-		  // python
-		  "[python]": {
-			"editor.defaultFormatter": "ms-python.black-formatter",
-			"editor.formatOnSave": true,
-			"editor.codeActionsOnSave": {
-			  "source.organizeImports": true
-			}
-		  },
-		  "isort.args": ["--profile", "black"],
-		  "flake8.args": [
-			"--max-line-length=88",
-			"--ignore=E203,W503,W504"
-		  ],
-		  "python.analysis.inlayHints.functionReturnTypes": true,
-		  "python.analysis.inlayHints.variableTypes": true,
-
-		  // visibility
-		  "editor.bracketPairColorization.enabled": true,
-		  "editor.guides.bracketPairs": "active"
-		},
-		"extensions": [
-		  // python
-		  "ms-python.python",
-		  "ms-python.vscode-pylance",
-		  "ms-toolsai.vscode-ai",
-		  "ms-python.black-formatter",
-		  "ms-python.flake8",
-		  "ms-python.isort",
-		  "donjayamanne.python-extension-pack",
-
-		  // jupyter
-		  "ms-toolsai.jupyter",
-		  "ms-toolsai.jupyter-keymap",
-		  "ms-toolsai.jupyter-renderers",
-
-		  // git
-		  "mhutchie.git-graph",
-		  "eamodio.gitlens",
-		  "donjayamanne.git-extension-pack",
-
-		  // markdown
-		  "yzhang.markdown-all-in-one",
-		  "shd101wyy.markdown-preview-enhanced",
-
-		  // shell
-		  "mads-hartmann.bash-ide-vscode",
-		  "timonwong.shellcheck",
-		  "foxundermoon.shell-format",
-
-		  // visibility
-		  "mechatroner.rainbow-csv",
-		  "GrapeCity.gc-excelviewer",
-		  "janisdd.vscode-edit-csv",
-		  "monokai.theme-monokai-pro-vscode",
-		  "vscode-icons-team.vscode-icons",
-		  "MS-CEINTL.vscode-language-pack-ja"
-		]
-	  }
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				},
+				// python
+				"[python]": {
+					"editor.defaultFormatter": "ms-python.black-formatter",
+					"editor.formatOnSave": true,
+					"editor.codeActionsOnSave": {
+						"source.organizeImports": true
+					}
+				},
+				"isort.args": [
+					"--profile",
+					"black"
+				],
+				"flake8.args": [
+					"--max-line-length=88",
+					"--ignore=E203,W503,W504"
+				],
+				"python.analysis.inlayHints.functionReturnTypes": true,
+				"python.analysis.inlayHints.variableTypes": true,
+				// visibility
+				"editor.bracketPairColorization.enabled": true,
+				"editor.guides.bracketPairs": "active"
+			},
+			"extensions": [
+				// python
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.vscode-ai",
+				"ms-python.black-formatter",
+				"ms-python.flake8",
+				"ms-python.isort",
+				"donjayamanne.python-extension-pack",
+				// jupyter
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-keymap",
+				"ms-toolsai.jupyter-renderers",
+				// git
+				"mhutchie.git-graph",
+				"eamodio.gitlens",
+				"donjayamanne.git-extension-pack",
+				// markdown
+				"yzhang.markdown-all-in-one",
+				"shd101wyy.markdown-preview-enhanced",
+				// shell
+				"mads-hartmann.bash-ide-vscode",
+				"timonwong.shellcheck",
+				"foxundermoon.shell-format",
+				// visibility
+				"mechatroner.rainbow-csv",
+				"GrapeCity.gc-excelviewer",
+				"janisdd.vscode-edit-csv",
+				"monokai.theme-monokai-pro-vscode",
+				"vscode-icons-team.vscode-icons",
+				"MS-CEINTL.vscode-language-pack-ja"
+			]
+		}
 	}
-  }
+}
