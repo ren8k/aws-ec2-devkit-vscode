@@ -16,7 +16,7 @@ aws ssm get-parameter --name $KEY_PREFIX/$PARAMETER_ID --with-decryption --query
 # change permission
 chmod 600 $OUTPUT_DIR/$OUTPUT_FILE
 
-# postscript ssh config
+# add ssh config
 cat <<EOF >>$SSH_CONFIG
 host $HOST
     HostName $INSTANCE_ID
