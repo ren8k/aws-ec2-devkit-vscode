@@ -121,3 +121,6 @@ Outputs:
   InstanceRoleArn:
     Description: The Instance Role ARN
     Value: !GetAtt EC2InstanceRole.Arn
+  KeyID:
+    Description: The Key ID
+    Value: !GetAtt NewKeyPair.KeyPairId
