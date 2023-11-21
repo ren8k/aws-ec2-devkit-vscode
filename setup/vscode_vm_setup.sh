@@ -1,6 +1,6 @@
 #!/bin/bash
-NAME="testuser"
-MAIL="testuser@example.com"
+NAME="username"
+MAIL="username@example.com"
 
 # git
 git config --global user.name $NAME
