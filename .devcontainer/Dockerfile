@@ -1,23 +1,19 @@
-FROM nvcr.io/nvidia/pytorch:23.10-py3
+FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.0.1-cpu-py310-ubuntu20.04-sagemaker
+WORKDIR /app
+COPY ./requirements.txt /tmp/
 
-RUN pip install -U pip \
-    && pip install --no-cache-dir japanize_matplotlib \
-    && pip install --no-cache-dir torchviz \
-    && pip install --no-cache-dir torchinfo \
-    && pip install --no-cache-dir mlflow \
-    && pip install --no-cache-dir autopep8 \
-    && pip install --no-cache-dir ipywidgets \
-    && jupyter nbextension enable --py widgetsnbextension
-
-RUN apt-get update && apt-get install -y \
-    screen
-
-RUN conda install graphviz \
-    && conda clean -i -t -y
+# install libs
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # work in container rootless.
-RUN useradd -m -d /home/dev-user -s /bin/bash dev-user
-USER dev-user
-
-# save gpu session between local and container.
-CMD screen watch -n 1 nvidia-smi
+ARG USERNAME=user
+ARG GROUPNAME=user
+ARG UID=1000
+ARG GID=1000
+ARG PASSWORD=user
+RUN groupadd -g $GID $GROUPNAME && \
+    useradd -m -s /bin/bash -u $UID -g $GID -G sudo $USERNAME && \
+    echo $USERNAME:$PASSWORD | chpasswd && \
+    echo "$USERNAME   ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER $USERNAME
+WORKDIR /home/$USERNAME/
