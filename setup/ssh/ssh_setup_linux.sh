@@ -32,6 +32,11 @@ host $HOST
     Port 22
     User $USER
     IdentityFile $SECRET_KEY_PATH
+    TCPKeepAlive yes
+    IdentitiesOnly yes
+    ServerAliveInterval 60
+    ForwardAgent yes
+    ForwardX11 yes
     ProxyCommand bash -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
 EOF
 
