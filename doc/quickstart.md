@@ -12,11 +12,10 @@ Windows 上には VScode は install されているものとする．
 1. AWS CLI のインストールと設定
 2. SSM Session Manager plugin のインストール
 3. ローカルの VSCode に extension をインストール
-4. cloudformation で，EC2 を構築
-5. `./setup/get_aws_keypair/get_key_linux.sh`を実行し，秘密鍵をダウンロード（4 の出力を利用）
-6. `/.ssh/config_linux`を自身の`.ssh/config`にコピーし，インスタンス ID や秘密鍵のパスを設定（4 の出力を利用）
-7. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
-8. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+4. CloudFormation で，EC2 を構築
+5. 秘密鍵をダウンロードし，`.ssh/config`を設定
+6. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
+7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
 ## 手順の各ステップの詳細
 
@@ -26,20 +25,18 @@ Windows 上には VScode は install されているものとする．
 
 ### 3. ローカルの VSCode に extension をインストール
 
-### 4. Cloudformation で，EC2 を構築
+### 4. CloudFormation で，EC2 を構築
 
 - VPC とサブネットの ID をユーザー側で記述する必要あり
   - default vpc のパブリックサブネット等を選択すれば良い
 - 必要なロールとかは実行のたびに作成される
 - SG ではインバウンドは全てシャットアウト
 
-### 5. 秘密鍵をダウンロード
+### 5. 秘密鍵をダウンロードし，`.ssh/config`を設定
 
-### 6. `.ssh/config`の設定
+### 6. VSCode から EC2 インスタンスにログイン
 
-### 7. VSCode から EC2 インスタンスにログイン
-
-### 8. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+### 7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
 1. AWS CLI のインストールと設定
 2. SSM Session Manager plugin のインストール
