@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: AWS EC2 for SSH Cloud9 Env to experiment Deep Learning with ElasticIP, Security Group, and EC2 Key pair
+Description: AWS EC2 environment for remote connection from VSCode to experiment with deep learning. This file create EC2, IAMRole, Security Group, and EC2 Key pair.
 
 Parameters:
   ImageId:
