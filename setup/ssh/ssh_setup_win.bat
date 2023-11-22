@@ -36,6 +36,11 @@ echo Updating SSH configuration...
     echo    Port 22
     echo    User %USER%
     echo    IdentityFile %SECRET_KEY_PATH%
+    echo    TCPKeepAlive yes
+    echo    IdentitiesOnly yes
+    echo    ServerAliveInterval 60
+    echo    ForwardAgent yes
+    echo    ForwardX11 yes
     echo    ProxyCommand C:\Program Files\Amazon\AWSCLIV2\aws.exe ssm start-session --target %%h --document-name AWS-StartSSHSession --parameters "portNumber=%%p"
 ) >> "%SSH_CONFIG_PATH%"
 
