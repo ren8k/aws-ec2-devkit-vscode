@@ -37,6 +37,8 @@
 					"--max-line-length=88",
 					"--ignore=E203,W503,W504"
 				],
+				"mypy-type-checker.args": [
+				],
 				"python.analysis.inlayHints.functionReturnTypes": true,
 				"python.analysis.inlayHints.variableTypes": true,
 				// visibility
@@ -51,6 +53,7 @@
 				"ms-python.black-formatter",
 				"ms-python.flake8",
 				"ms-python.isort",
+				"ms-python.mypy-type-checker",
 				"donjayamanne.python-extension-pack",
 				// jupyter
 				"ms-toolsai.jupyter",

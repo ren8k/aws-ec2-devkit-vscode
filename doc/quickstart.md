@@ -23,6 +23,32 @@ Windows 上には VScode は install されているものとする．
 
 ### 2. SSM Session Manager plugin のインストール
 
+<details>
+<summary>導入設定の詳細</summary>
+<br/>
+
+1. flake8 のインストール
+
+```sh
+pip install flake8
+```
+
+2. flake8 によるチェックの実行
+
+```sh
+flake8 <任意のディレクトリ or Pythonファイル> # チェックしたい対象を指定して実行
+```
+
+3. コードの修正箇所の表示 (show-source オプションの指定)
+
+```sh
+flake8 --show-source <任意のディレクトリ or Pythonファイル> # チェックしたいファイルを指定して実行
+```
+
+</details>
+
+<br/>
+
 ### 3. ローカルの VSCode に extension をインストール
 
 ### 4. CloudFormation で，EC2 を構築

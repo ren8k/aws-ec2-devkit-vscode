@@ -17,6 +17,7 @@
   "isort.args": ["--profile", "black"],
   // linter
   "flake8.args": ["--max-line-length=88", "--ignore=E203,W503,W504"],
+  "mypy-type-checker.args": [],
   // coding visibility
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.variableTypes": true,
