@@ -77,6 +77,7 @@ flake8 --show-source <任意のディレクトリ or Pythonファイル> # チ�
 
 - 開発開始時には，VSCode の extension `AWS Remote Development`経由で各々の EC2 インスタンスを起動し，VSCode からログインする
 - 切り忘れ防止のために，夜 12 時には lambda で全 EC2 インスタンスを停止させるようにする
+  - 特定のインスタンスは除外可能にできるようにする（運用サーバー等）
   - lambda の構築方法は後述する # TODO
 
 ## その他
