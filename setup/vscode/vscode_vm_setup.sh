@@ -18,6 +18,7 @@ code --install-extension ms-toolsai.vscode-ai
 code --install-extension ms-python.black-formatter
 code --install-extension ms-python.flake8
 code --install-extension ms-python.isort
+code --install-extension ms-python.mypy-type-checker
 code --install-extension donjayamanne.python-extension-pack
 ## docker
 code --install-extension ms-azuretools.vscode-docker
