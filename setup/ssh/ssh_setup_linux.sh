@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set variables(cf output)
-PARAMETER_ID="key-XXXXXXXXXXXXXXXXX"
+KEY_ID="key-XXXXXXXXXXXXXXXXX"
 INSTANCE_ID="i-XXXXXXXXXXXXXXXXX"
 SECRET_KEY="ec2_secret_key.pem"
 KEY_PREFIX="/ec2/keypair"
@@ -20,7 +20,7 @@ if [ ! -d $SSH_CONFIG_DIR ]; then
 fi
 
 echo "Retrieving and saving the secret key..."
-aws ssm get-parameter --name $KEY_PREFIX/$PARAMETER_ID --with-decryption --query "Parameter.Value" --output text >$SECRET_KEY_PATH
+aws ssm get-parameter --name $KEY_PREFIX/$KEY_ID --with-decryption --query "Parameter.Value" --output text >$SECRET_KEY_PATH
 
 echo "Setting permissions for the secret key..."
 chmod 600 $SECRET_KEY_PATH
