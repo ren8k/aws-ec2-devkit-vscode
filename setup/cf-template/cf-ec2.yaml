@@ -46,6 +46,7 @@ Resources:
         - "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
         - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
         - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+        - "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
       RoleName: !Sub "${AWS::StackName}-cf-remote-development-role"
       Tags:
         - Key: "Name"
@@ -102,13 +103,29 @@ Resources:
             VolumeSize: !Ref "VolumeSize"
             DeleteOnTermination: "true"
             Encrypted: "false"
-      # upgrade git
+      # upgrade git, awscli, and reboot
       UserData:
         Fn::Base64: |
           #!/bin/bash
+          # upgrade git
           sudo -E add-apt-repository ppa:git-core/ppa -y
           sudo apt-get update && sudo apt-get -y upgrade
           git config --global init.defaultBranch main
+
+          # uninstall awscli v1
+          sudo rm -rf /usr/local/aws
+          sudo rm /usr/local/bin/aws
+          sudo rm -r ~/.aws/
+
+          # install awscli v2
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          sudo rm aws/ -r
+          sudo rm awscliv2.zip
+
+          # init conda
+          conda init bash
           sudo reboot
       Tags:
         - Key: "Name"
