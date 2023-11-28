@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 REM Set variables(cf output)
-set "PARAMETER_ID=key-XXXXXXXXXXXXXXXXX"
+set "KEY_ID=key-XXXXXXXXXXXXXXXXX"
 set "INSTANCE_ID=i-XXXXXXXXXXXXXXXXX"
 set "SECRET_KEY=ec2_secret_key.pem"
 set "KEY_PREFIX=/ec2/keypair"
@@ -21,7 +21,7 @@ if not exist "%SSH_CONFIG_DIR%" (
 
 REM Get key pair from parameter store and save to file
 echo Retrieving and saving the secret key...
-aws ssm get-parameter --name "%KEY_PREFIX%/%PARAMETER_ID%" --with-decryption --query "Parameter.Value" --output text > "%SECRET_KEY_PATH%"
+aws ssm get-parameter --name "%KEY_PREFIX%/%KEY_ID%" --with-decryption --query "Parameter.Value" --output text > "%SECRET_KEY_PATH%"
 
 REM Change permission
 echo Setting file permissions...

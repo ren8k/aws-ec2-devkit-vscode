@@ -5,6 +5,7 @@ MAIL="username@example.com"
 # git
 git config --global user.name $NAME
 git config --global user.email $MAIL
+git config --global core.editor vim
 
 # codecommit credential
 git config --global credential.helper '!aws codecommit credential-helper $@'
