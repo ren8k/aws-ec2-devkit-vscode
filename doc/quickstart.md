@@ -32,7 +32,7 @@ AWS Secret Access Key [None]: IAM ユーザーの作成時にダウンロード�
 Default region name [None]: ap-northeast-1
 Default output format [None]: json
 ```
-- Zscalerなどの社内プロキシを利用している場合は，`.aws/config`に以下を追記する．例えば，Zscalerを利用している場合は，以下のようにCA 証明書のフルパスを記述する．CA 証明書のエクスポート方法は以下に記述している．
+- Zscalerなどの社内プロキシを利用している場合は，`.aws/config`に以下を追記する．例えば，Zscalerを利用している場合は，以下のようにCA 証明書のフルパスを記述する．CA 証明書のエクスポート方法は後述する．
 
 ```
 ca_bundle = C:\path\to\zscalar_root_cacert.cer
@@ -50,6 +50,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
   - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
 
 </details>
+<br/>
 
 ### 2. SSM Session Manager plugin のインストール
 
@@ -64,20 +65,49 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 - aws-toolkit-vscode: AWSの各種サービスをVSCodeから操作するためのextension
 - ec2-farm: AWSアカウント内のEC2インスタンスの状態を確認し，起動・停止・再起動を行うためのextension
 
-### 4. CloudFormation で，EC2 を構築
+### 4. CloudFormation で EC2 を構築
 
-`./setup/cf-template/cf-ec2.yaml`を利用し，cloudformation で，EC2 を構築する．
+`./setup/cf-template/cf-ec2.yaml`（cfテンプレート）を利用し，CloudFormation で EC2 を構築する．以下にcfテンプレートの簡易説明を行う．CloudFormation の詳細な実行方法は後述しているので，必要があれば適宜参考にされたい．
 
-- VPC とサブネットの ID をユーザー側で記述する必要あり
+- VPC とサブネットの ID をユーザー側で記述する必要がある
   - default vpc のパブリックサブネット等を選択すれば良い
-- 必要なロールとかは実行のたびに作成される
-- セキュリティグループ ではインバウンドは全てシャットアウトしている
-- 以下のロールを付与
-  - S3FullAccess
-  - ...
-- ssh で利用する Key Pair を作成している
-- 出力部には，インスタンス ID と Key ID を出力している
+- EC2へのリモートアクセス・開発に必要と想定されるポリシーをアタッチしたロールは自動作成される．以下のポリシーをアタッチしている．
+  - AmazonSSMManagedInstanceCore
+  - AmazonS3FullAccess
+  - AWSCodeCommitFullAccess
+  - EC2InstanceProfileForImageBuilderECRContainerBuilds
+  - AmazonSageMakerFullAccess
+  - SecretsManagerReadWrite
+  - AWSLambda_FullAccess
+- セキュリティグループも自動作成しており，インバウンドは全てシャットアウトしている
+- ssh 接続で利用する Key Pair を作成している
+- EC2インスタンス作成時，以下を自動実行している
+  - gitのアップグレード
+  - aws cli のアップグレード
+  - condaの初期設定
+  - 再起動
+- CloudFormationの出力部には，インスタンス ID と Key ID を出力している
   - 後述の shell で利用する
+
+<details>
+<summary>※CloudFormation 実行手順</summary>
+<br/>
+
+- [CloudFormationコンソール](https://console.aws.amazon.com/cloudformation/)を開き，スタックの作成を押下
+- テンプレートの指定 > テンプレートファイルのアップロード > ファイルの選択で上記で作成したyamlファイルを指定し，次へを押下
+  - `./setup/cf-template/cf-ec2.yaml`をuploadする．
+- 任意のスタック名を入力後，以下のパラメータを設定する
+  - EC2InstanceType: インスタンスタイプ．デフォルトはg4dn.xlarge
+  - VolumeSize: ボリュームサイズ．デフォルトは100GB
+  - ImageId: AMIのID．デフォルトはDeep Learning AMI GPU PyTorch 2.0.1のID
+  - VPCId: 利用するVPCのID（デフォルトVPCのID等で問題ない）
+  - SubnetID: 利用するパブリックサブネットのID（デフォルトVPCのパブリックサブネットID等で問題ない）
+  
+- 適切なIAM Roleをアタッチし，次へを押下（一時的にAdmin roleで実施しても良いかもしれない）
+- 作成されるまで30秒~1分ほど待つ
+
+</details>
+<br/>
 
 ### 5. 秘密鍵をダウンロードし，`.ssh/config`を設定
 
