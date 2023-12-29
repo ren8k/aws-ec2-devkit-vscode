@@ -1,15 +1,15 @@
 # クイックスタート
 
-本リポジトリでは，Windows 上の PC から，AWS EC2 へリモート接続し，Dev Containers を利用して深層学習，LLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
-なお，所属するチームにクラウドネイティブな開発手法を導入することを目的としており，python コーディングにおける linter, formatter や setting json, VSCode extension なども共通のものを利用するようにしている．
+本リポジトリでは，Windows・Linux上の PC（ローカルのVSCode IDE） からAWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
+なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や vscode setting json, VSCode extension なども共通のものを利用するようにしている．
 
 ## 前提
 
-Windows 上には VScode は install されているものとする．
+Windows，Linux上には VScode は install されているものとする．加え，AWSユーザーは作成済みであり，Administrator相当の権限を保持していることを想定している．なお，手順書中では，Windowsでのセットアップ手順に主眼を起き記述している．（Linuxでも同様の手順で実行可能．）
 
 ## 手順
 
-1. AWS CLI のインストールと設定
+1. AWS CLI のインストールとセットアップ
 2. SSM Session Manager plugin のインストール
 3. ローカルの VSCode に extension をインストール
 4. CloudFormation で，EC2 を構築
@@ -19,35 +19,41 @@ Windows 上には VScode は install されているものとする．
 
 ## 手順の各ステップの詳細
 
-### 1. AWS CLI のインストールと設定
+### 1. AWS CLI のインストールとセットアップ
 
-### 2. SSM Session Manager plugin のインストール
+公式ドキュメント[^1] [^2]を参考に，AWS CLI をインストール，セットアップする．
+
+- [Windows 用の AWS CLI MSI インストーラ (64 ビット)](https://awscli.amazonaws.com/AWSCLIV2.msi) をダウンロードして実行する
+- インストール後，`aws --version`でバージョンが表示されれば OK
+- `aws configure`を実行し，AWS CLI の設定を行う
+```
+AWS Access Key ID [None]: IAM ユーザーの作成時にダウンロードした csv ファイルに記載
+AWS Secret Access Key [None]: IAM ユーザーの作成時にダウンロードした csv ファイルに記載
+Default region name [None]: ap-northeast-1
+Default output format [None]: json
+```
+- Zscalerなどの社内プロキシを利用している場合は，`.aws/config`に以下を追記する．例えば，Zscalerを利用している場合は，以下のようにCA 証明書のフルパスを記述する．CA 証明書のエクスポート方法は以下に記述している．
+
+```
+ca_bundle = C:\path\to\zscalar_root_cacert.cer
+```
 
 <details>
-<summary>導入設定の詳細</summary>
+<summary>※Zscaler CA 証明書のエクスポート方法</summary>
 <br/>
 
-1. flake8 のインストール
+公式ドキュメント[^3]を参考に，エクスポートする．
 
-```sh
-pip install flake8
-```
-
-2. flake8 によるチェックの実行
-
-```sh
-flake8 <任意のディレクトリ or Pythonファイル> # チェックしたい対象を指定して実行
-```
-
-3. コードの修正箇所の表示 (show-source オプションの指定)
-
-```sh
-flake8 --show-source <任意のディレクトリ or Pythonファイル> # チェックしたいファイルを指定して実行
-```
+- コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
+- Zscalar Root CA を左クリック > すべてのタスク > エクスポート
+  - 証明書のエクスポートウィザードで、次へ > Base 64 encoded X.509 を選択して次へ
+  - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
 
 </details>
 
-<br/>
+### 2. SSM Session Manager plugin のインストール
+
+
 
 ### 3. ローカルの VSCode に extension をインストール
 
@@ -100,3 +106,38 @@ check_vm_env.sh とかで確認可能．
 ### setting json
 
 ### extension
+
+
+
+
+
+<details>
+<summary>導入設定の詳細</summary>
+<br/>
+
+1. flake8 のインストール
+
+```sh
+pip install flake8
+```
+
+2. flake8 によるチェックの実行
+
+```sh
+flake8 <任意のディレクトリ or Pythonファイル> # チェックしたい対象を指定して実行
+```
+
+3. コードの修正箇所の表示 (show-source オプションの指定)
+
+```sh
+flake8 --show-source <任意のディレクトリ or Pythonファイル> # チェックしたいファイルを指定して実行
+```
+
+</details>
+
+<br/>
+
+## 参考
+[^1]:[AWS CLI の最新バージョンを使用してインストールまたは更新を行う](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
+[^2]:[AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
+[^3]:[CA証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
