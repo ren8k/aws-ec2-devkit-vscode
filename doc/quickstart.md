@@ -53,11 +53,20 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 ### 2. SSM Session Manager plugin のインストール
 
-
+公式ドキュメント[^4]を参考に，SSM Session Manager plugin をインストールする．
+- [Session Manager プラグインのインストーラ](https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe)をダウンロードし実行する
 
 ### 3. ローカルの VSCode に extension をインストール
 
+`./setup/vscode/vscode_local_setup_win.bat`を実行し，VSCodeのextensionを一括インストールする．Linux の場合は，`./setup/vscode/vscode_local_setup_linux.sh`を実行する．本バッチファイル/shellにより，以下のextensionがインストールされる．
+
+- vscode-remote-extensionpack: VSCodeでリモート開発を行うためのextension
+- aws-toolkit-vscode: AWSの各種サービスをVSCodeから操作するためのextension
+- ec2-farm: AWSアカウント内のEC2インスタンスの状態を確認し，起動・停止・再起動を行うためのextension
+
 ### 4. CloudFormation で，EC2 を構築
+
+`./setup/cf-template/cf-ec2.yaml`を利用し，cloudformation で，EC2 を構築する．
 
 - VPC とサブネットの ID をユーザー側で記述する必要あり
   - default vpc のパブリックサブネット等を選択すれば良い
@@ -109,35 +118,8 @@ check_vm_env.sh とかで確認可能．
 
 
 
-
-
-<details>
-<summary>導入設定の詳細</summary>
-<br/>
-
-1. flake8 のインストール
-
-```sh
-pip install flake8
-```
-
-2. flake8 によるチェックの実行
-
-```sh
-flake8 <任意のディレクトリ or Pythonファイル> # チェックしたい対象を指定して実行
-```
-
-3. コードの修正箇所の表示 (show-source オプションの指定)
-
-```sh
-flake8 --show-source <任意のディレクトリ or Pythonファイル> # チェックしたいファイルを指定して実行
-```
-
-</details>
-
-<br/>
-
 ## 参考
 [^1]:[AWS CLI の最新バージョンを使用してインストールまたは更新を行う](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
 [^2]:[AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
 [^3]:[CA証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
+[^4]:[Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
