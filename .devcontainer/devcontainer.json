@@ -7,9 +7,12 @@
 	"workspaceMount": "source=${localWorkspaceFolder},target=/app/pj-name,type=bind,consistency=cached", // set your pj name suffix in target
 	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
 	"runArgs": [
-		"--name", "kgl",
-		"--gpus", "all",
-		"--shm-size", "32g", // shared memory size
+		"--name",
+		"kgl",
+		"--gpus",
+		"all",
+		"--shm-size",
+		"32g", // shared memory size
 	],
 	// Configure tool-specific properties.
 	"customizations": {
@@ -45,7 +48,11 @@
 				"python.analysis.inlayHints.variableTypes": true,
 				// visibility
 				"editor.bracketPairColorization.enabled": true,
-				"editor.guides.bracketPairs": "active"
+				"editor.guides.bracketPairs": "active",
+				// markdown
+				"[markdown]": {
+					"editor.wordWrap": "bounded",
+				},
 			},
 			"extensions": [
 				// python
