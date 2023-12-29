@@ -13,7 +13,7 @@ Windows，Linux上には VScode は install されているものとする．加
 2. SSM Session Manager plugin のインストール
 3. ローカルの VSCode に extension をインストール
 4. CloudFormation で，EC2 を構築
-5. 秘密鍵をダウンロードし，`.ssh/config`を設定
+5. SSHの設定
 6. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
 7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
@@ -67,7 +67,19 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 ### 4. CloudFormation で EC2 を構築
 
-`./setup/cf-template/cf-ec2.yaml`（cfテンプレート）を利用し，CloudFormation で EC2 を構築する．以下にcfテンプレートの簡易説明を行う．CloudFormation の詳細な実行方法は後述しているので，必要があれば適宜参考にされたい．
+`./setup/cf-template/cf-ec2.yaml`（cfテンプレート）を利用し，CloudFormation で EC2 を構築する．以下に実際に構築されるリソースと，cfテンプレートの簡易説明を行う．また，CloudFormation の詳細な実行方法は後述しているので，必要があれば適宜参考にされたい．
+
+#### 構築するリソース
+
+- EC2
+- EC2 Key pair
+- Security Group
+
+<img src="../img/cf-ec2-architecture.png" width="400">
+
+
+
+#### cfテンプレートの簡易説明
 
 - VPC とサブネットの ID をユーザー側で記述する必要がある
   - default vpc のパブリックサブネット等を選択すれば良い
@@ -80,7 +92,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
   - SecretsManagerReadWrite
   - AWSLambda_FullAccess
 - セキュリティグループも自動作成しており，インバウンドは全てシャットアウトしている
-- ssh 接続で利用する Key Pair を作成している
+- SSH 接続で利用する Key Pair を作成している
 - EC2インスタンス作成時，以下を自動実行している
   - gitのアップグレード
   - aws cli のアップグレード
@@ -109,22 +121,28 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 </details>
 <br/>
 
-### 5. 秘密鍵をダウンロードし，`.ssh/config`を設定
+### 5. SSHの設定
+
+`./setup/get_aws_keypair/get_key_win.bat`を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linuxの場合は`./setup/get_aws_keypair/get_key_linux.sh`を実行すること．なお，実行前に．ソースコードの変数`KEY_ID`と`INSTANCE_ID`にはCloudFormationの実行結果の各値を記述すること．
 
 ### 6. VSCode から EC2 インスタンスにログイン
 
-check_vm_env.sh とかで確認可能．
+VSCodeのリモート接続機能を利用して，SSM Session Manager Plugin経由でEC2インスタンスにSSHでログインする．
+
+- VSCode上で，`F1`を押下し，`Remote-SSH: Connect to Host...`を選択
+- `~/.ssh/config`に記述したホスト名を選択（デフォルトでは`ec2`となっている）
+- リモート側の初期設定が終わるまで30秒程度待つ．（利用プラットフォームの選択画面が表示された場合，Linuxを選択すること）
+- EC2インスタンス上に本リポジトリをcloneする．
+- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，GPUやpytorchが利用可能であることを確認する．
 
 ### 7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
-1. AWS CLI のインストールと設定
-2. SSM Session Manager plugin のインストール
-3. `./setup/vscode/vscode_settings.json`を実行し，VSCode に extension をインストール
-4. `./setup/cf-template/cf-ec2.yaml`を利用し，cloudformation で，EC2 を構築
-5. `./setup/get_aws_keypair/get_key_linux.sh`を実行し，秘密鍵をダウンロード（4 の出力を利用）
-6. `/.ssh/config_linux`を自身の`.ssh/config`にコピーし，インスタンス ID や秘密鍵のパスを設定（4 の出力を利用）
-7. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
-8. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+
+
+1.
+2. `/.ssh/config_linux`を自身の`.ssh/config`にコピーし，インスタンス ID や秘密鍵のパスを設定（4 の出力を利用）
+3. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
+4. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
 ## 運用
 
