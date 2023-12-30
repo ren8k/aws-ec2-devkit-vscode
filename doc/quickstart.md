@@ -15,7 +15,8 @@ Windows，Linux上には VScode は install されているものとする．加
 4. CloudFormation で，EC2 を構築
 5. SSHの設定
 6. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
-7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+7. EC2 インスタンスに VSCode extension をインストール
+8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築
 
 ## 手順の各ステップの詳細
 
@@ -141,15 +142,91 @@ VSCodeのリモート接続機能を利用して，SSM Session Manager Plugin経
 - リモート側の初期設定が終わるまで30秒程度待つ．（Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること）
   - ※スタックの作成が完了しても，cfテンプレート内のUserDataのshell実行が終わるまで待つ必要があるため注意．（最長5分~10分程度待つ．UserDataの実行ログは`/var/log/cloud-init-output.log`で確認できる．）
 - EC2インスタンスにログイン後，インスタンス上に本リポジトリをcloneする．
-- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，EC2インスタンス上でGPUやpytorchが利用可能であることを確認する．
-  - pytorchを利用したMNISTの学習を行うスクリプト`./setup/check_vm_env/mnist_example/mnist.py`を用意しているため，これを実行しても構わない．
+- `conda activate pytorch`実行後，`./setup/check_vm_env/check_cuda_torch.sh`を実行し，EC2インスタンス上でGPUやpytorchが利用可能であることを確認する．以下のような出力が表示されるはず．
+  - pytorchを利用したMNISTの画像分類の学習を行うスクリプト`./setup/check_vm_env/mnist_example/mnist.py`を用意しているため，これを実行しても構わない．
 
-### 7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+```
+==============check cuda==============
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Mon_Apr__3_17:16:06_PDT_2023
+Cuda compilation tools, release 12.1, V12.1.105
+Build cuda_12.1.r12.1/compiler.32688072_0
+==============check gpu==============
+Sat Dec 30 08:28:59 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.104.12             Driver Version: 535.104.12   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  Tesla T4                       On  | 00000000:00:1E.0 Off |                    0 |
+| N/A   31C    P8               9W /  70W |      0MiB / 15360MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+==============check torch==============
+if you exec at first time, you might wait for a while...
+torch.__version__: 2.1.0
+torch.cuda.is_available(): True
+```
 
-- `./setup/vscode/vscode_vm_setup.sh`を実行し，EC2 インスタンスに extension をインストール
-- VSCode上で，`F1`を押下し，`Remote-Containers: Open Folder in Container...`を選択
-し，Dev Containers を構築
-- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，コンテナ内でGPUやpytorchが利用可能であることを確認する．
+### 7. EC2 インスタンスに VSCode extension をインストール
+
+- `./setup/vscode/vscode_vm_setup.sh`を実行し，EC2 インスタンスに Gitの初期設定とVSCode extension をインストール
+  - コード中の`NAME`と`MAIL`には，各自の名前とメールアドレスを記述すること
+
+### 8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築
+
+VSCode DevContainersと [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．`./.devcontainer/devcontainer.json`のinitializeCommandで，ECRのログインを行うことで，SageMaker Training Jobなどで利用されているイメージをベースにコンテナを構築できるようにしている．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNetなどのフレームワークに加え，LLM，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
+
+- VSCode上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
+  - `./.devcontainer/devcontainer.json`の`pj-name`という箇所には，各自のプロジェクト名を記述すること
+  - 初回のコンテナ構築時は，Dockerイメージのpullに時間がかかるため，10分~20分程度待つ．
+- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，コンテナ内でGPUやpytorchが利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
+
+
+```
+==============check cuda==============
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Mon_Apr__3_17:16:06_PDT_2023
+Cuda compilation tools, release 12.1, V12.1.105
+Build cuda_12.1.r12.1/compiler.32688072_0
+==============check gpu==============
+Sat Dec 30 08:12:03 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.104.12             Driver Version: 535.104.12   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  Tesla T4                       On  | 00000000:00:1E.0 Off |                    0 |
+| N/A   31C    P8               9W /  70W |      0MiB / 15360MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+==============check torch==============
+if you exec at first time, you might wait for a while...
+torch.__version__: 2.1.0
+torch.cuda.is_available(): True
+```
 
 ## 運用
 
@@ -159,15 +236,6 @@ VSCodeのリモート接続機能を利用して，SSM Session Manager Plugin経
   - lambda の構築方法は後述する # TODO
 
 ## その他
-
-### EC2からCodeCommitへの認証設定
-
-cfテンプレートで作成される EC2 は，CodeCommit への認証設定は自動で行われているため，以下のようにGitのユーザー名とメールの設定のみで，EC2からのCodeCommitの利用が可能である．
-
-```sh
-git config --global user.email "testuser@example.com"
-git config --global user.name "testuser"
-```
 
 ### コーディングガイドライン
 
@@ -185,7 +253,9 @@ git config --global user.name "testuser"
 
 - extension
 
-### 
+### チームでの複数台のEC2の運用
+
+AWS Lambdaを利用して，夜12時に全てのEC2インスタンスを停止させるようにすることで，インスタンスの消し忘れ防止を行っている．詳細は，`./doc/operation_ec2.md`を参照されたい．
 
 ## 参考
 
