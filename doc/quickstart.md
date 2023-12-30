@@ -1,11 +1,11 @@
 # クイックスタート
 
-本リポジトリでは，Windows・Linux上の PC（ローカルのVSCode IDE） からAWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
-なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や vscode setting json, VSCode extension なども共通のものを利用するようにしている．
+本リポジトリでは，Windows・Linux PC上の VSCode IDE から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
+なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode setting.json, VSCode extension なども共通のものを利用するようにしている．
 
 ## 前提
 
-Windows，Linux上には VScode は install されているものとする．加え，AWSユーザーは作成済みであり，Administrator相当の権限を保持していることを想定している．なお，手順書中では，Windowsでのセットアップ手順に主眼を起き記述している．（Linuxでも同様の手順で実行可能．）
+Windows，Linux上には VScode は install されているものとする．加え，AWSユーザーは作成済みであり，Administrator相当の権限を保持していることを想定している．なお，手順書中では，Windowsでのセットアップに主眼を起き記述している．（Linuxでも同様の手順で実施可能．）
 
 ## 手順
 
@@ -228,34 +228,19 @@ torch.__version__: 2.1.0
 torch.cuda.is_available(): True
 ```
 
-## 運用
-
-- 開発開始時には，VSCode の extension `AWS Remote Development`経由で各々の EC2 インスタンスを起動し，VSCode からログインする
-- 切り忘れ防止のために，夜 12 時には lambda で全 EC2 インスタンスを停止させるようにする
-  - 特定のインスタンスは除外可能にできるようにする（運用サーバー等）
-  - lambda の構築方法は後述する # TODO
-
 ## その他
+
+### インスタンスの起動・停止
+
+開発開始時・終了時には，VSCode extension `EC2 Farm`経由で各々の EC2 インスタンスを起動・停止することが可能である．（AWSコンソールを開く必要はない．）
 
 ### コーディングガイドライン
 
-チーム開発において VSCode を利用するメリットは，linter や formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができることである．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって，開発効率が向上すると考えられる．
-以下に各項目について解説する．
+チーム開発において VSCode を利用するメリットは，linter や formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって，開発効率が向上すると考えられる．詳細は，`./doc/coding-guidelines.md`を参照されたい．
 
+### チームでのEC2の運用・管理
 
-～～～.mdで詳細に説明している
-
-- linter
-
-- formatter
-
-- setting json
-
-- extension
-
-### チームでの複数台のEC2の運用
-
-AWS Lambdaを利用して，夜12時に全てのEC2インスタンスを停止させるようにすることで，インスタンスの消し忘れ防止を行っている．詳細は，`./doc/operation_ec2.md`を参照されたい．
+インスタンスの切り忘れ防止のために，AWS Lambdaを利用して，夜12時に全てのEC2インスタンスを停止させている．なお，運用サーバーなど特定のインスタンスは除外可能にできるようにしている．詳細は，`./doc/operation_ec2.md`を参照されたい．
 
 ## 参考
 
