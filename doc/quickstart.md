@@ -75,9 +75,16 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 - EC2 Key pair
 - Security Group
 
-<img src="../img/cf-ec2-architecture.png" width="400">
+<img src="./img/cf-ec2-architecture.png" width="500">
 
+#### EC2の環境について
 
+Deep Learning用のAMIを利用しているため，以下が全てインストールされている状態で EC2 が構築される．
+- Git
+- Docker
+- NVIDIA Container Toolkit
+- NVIDIA ドライバー
+- CUDAおよびcuDNN, Pytorch
 
 #### cfテンプレートの簡易説明
 
@@ -131,18 +138,18 @@ VSCodeのリモート接続機能を利用して，SSM Session Manager Plugin経
 
 - VSCode上で，`F1`を押下し，`Remote-SSH: Connect to Host...`を選択
 - `~/.ssh/config`に記述したホスト名を選択（デフォルトでは`ec2`となっている）
-- リモート側の初期設定が終わるまで30秒程度待つ．（利用プラットフォームの選択画面が表示された場合，Linuxを選択すること）
-- EC2インスタンス上に本リポジトリをcloneする．
-- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，GPUやpytorchが利用可能であることを確認する．
+- リモート側の初期設定が終わるまで30秒程度待つ．（Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること）
+  - ※スタックの作成が完了しても，cfテンプレート内のUserDataのshell実行が終わるまで待つ必要があるため注意．（最長5分~10分程度待つ．UserDataの実行ログは`/var/log/cloud-init-output.log`で確認できる．）
+- EC2インスタンスにログイン後，インスタンス上に本リポジトリをcloneする．
+- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，EC2インスタンス上でGPUやpytorchが利用可能であることを確認する．
+  - pytorchを利用したMNISTの学習を行うスクリプト`./setup/check_vm_env/mnist_example/mnist.py`を用意しているため，これを実行しても構わない．
 
 ### 7. EC2 インスタンスに extension をインストール後，Dev Containers の構築
 
-
-
-1.
-2. `/.ssh/config_linux`を自身の`.ssh/config`にコピーし，インスタンス ID や秘密鍵のパスを設定（4 の出力を利用）
-3. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
-4. EC2 インスタンスに extension をインストール後，Dev Containers の構築
+- `./setup/vscode/vscode_vm_setup.sh`を実行し，EC2 インスタンスに extension をインストール
+- VSCode上で，`F1`を押下し，`Remote-Containers: Open Folder in Container...`を選択
+し，Dev Containers を構築
+- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，コンテナ内でGPUやpytorchが利用可能であることを確認する．
 
 ## 運用
 
@@ -153,20 +160,35 @@ VSCodeのリモート接続機能を利用して，SSM Session Manager Plugin経
 
 ## その他
 
+### EC2からCodeCommitへの認証設定
+
+cfテンプレートで作成される EC2 は，CodeCommit への認証設定は自動で行われているため，以下のようにGitのユーザー名とメールの設定のみで，EC2からのCodeCommitの利用が可能である．
+
+```sh
+git config --global user.email "testuser@example.com"
+git config --global user.name "testuser"
+```
+
+### コーディングガイドライン
+
 チーム開発において VSCode を利用するメリットは，linter や formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができることである．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって，開発効率が向上すると考えられる．
 以下に各項目について解説する．
 
-### linter
 
-### formatter
+～～～.mdで詳細に説明している
 
-### setting json
+- linter
 
-### extension
+- formatter
 
+- setting json
 
+- extension
+
+### 
 
 ## 参考
+
 [^1]:[AWS CLI の最新バージョンを使用してインストールまたは更新を行う](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
 [^2]:[AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
 [^3]:[CA証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
