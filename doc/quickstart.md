@@ -3,6 +3,30 @@
 本リポジトリでは，Windows・Linux PC上の VSCode IDE から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode setting.json, VSCode extension なども共通のものを利用するようにしている．
 
+## 目次
+
+- [クイックスタート](#クイックスタート)
+  - [目次](#目次)
+  - [前提](#前提)
+  - [手順](#手順)
+  - [手順の各ステップの詳細](#手順の各ステップの詳細)
+    - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
+    - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
+    - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
+    - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
+      - [構築するリソース](#構築するリソース)
+      - [EC2の環境について](#ec2の環境について)
+      - [cfテンプレートの簡易説明](#cfテンプレートの簡易説明)
+    - [5. SSHの設定](#5-sshの設定)
+    - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
+    - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
+    - [8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
+  - [その他](#その他)
+    - [インスタンスの起動・停止](#インスタンスの起動停止)
+    - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
+    - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
+  - [参考](#参考)
+
 ## 前提
 
 Windows，Linux上には VScode は install されているものとする．加え，AWSユーザーは作成済みであり，Administrator相当の権限を保持していることを想定している．なお，手順書中では，Windowsでのセットアップに主眼を起き記述している．（Linuxでも同様の手順で実施可能．）
@@ -186,7 +210,7 @@ torch.cuda.is_available(): True
 
 ### 8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築
 
-VSCode DevContainersと [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．`./.devcontainer/devcontainer.json`のinitializeCommandで，ECRのログインを行うことで，SageMaker Training Jobなどで利用されているイメージをベースにコンテナを構築できるようにしている．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNetなどのフレームワークに加え，LLM，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
+VSCode DevContainersと [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．`./.devcontainer/devcontainer.json`のinitializeCommandでECRのログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWSのカスタムイメージ）をpullしている．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNetなどのフレームワークがpre-installされたイメージ（SageMaker Training Jobでの実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
 
 - VSCode上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
   - `./.devcontainer/devcontainer.json`の`pj-name`という箇所には，各自のプロジェクト名を記述すること
@@ -234,7 +258,7 @@ torch.cuda.is_available(): True
 
 開発開始時・終了時には，VSCode extension `EC2 Farm`経由で各々の EC2 インスタンスを起動・停止することが可能である．（AWSコンソールを開く必要はない．）
 
-### コーディングガイドライン
+### コーディングガイドラインと開発環境の設定
 
 チーム開発において VSCode を利用するメリットは，linter や formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって，開発効率が向上すると考えられる．詳細は，`./doc/coding-guidelines.md`を参照されたい．
 
