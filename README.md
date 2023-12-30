@@ -58,10 +58,9 @@ https://qiita.com/Spritaro/items/602118d946a4383bd2bb
 
 チーム内で、リンター・フォーマッターを統一することで、コードの解釈の違いの低減、無駄な Git Commit の削減を狙う。また、難解な docker コマンド、Git コマンドを利用せずに容易にコンテナ上での開発・GUI ベースの Git 運用を実行できるようにし、効率良く DevOps を回せるようにする。これにより、開発者の開発効率の向上・新規参画者への引き継ぎ工数を最小現にすることができる。加えて、本検証のナレッジをまとめ、事業部展開することにより、事業部全体の開発力の向上にも貢献できると考えられる。
 
-# 依頼
+# オリジナリティ
 
-空き時間等にこれらの検証を行っても問題ないか
-上記理由で、若干残業してしまっても問題ないか？（30~35 時間前後になる可能性はある）
+AWS SageMaker Deep Learning Docker Imageをベースに，VSCode Dev Containersを利用して，VSCode上での開発を可能にしている．SageMaker Pipelineの開発やSageMaker Training Jobの実行のみならず，深層学習，LLMモデル実行のための環境を迅速に構築し，VSCode上で開発可能にしている．
 
 # 確認したこと（現状）
 
@@ -91,16 +90,3 @@ markdown で codecommit に展開
 スケジューリング、lambda
 https://dev.classmethod.jp/articles/how-to-use-vscode-remote-ssh-with-aws-systems-manager/
 https://dev.classmethod.jp/articles/how-to-use-aws-cloud-9-with-vscode-remote-ssh/
-
----
-
-## Zscaler CA 証明書のエクスポート
-
-- コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
-- Zscalar Root CA を左クリック > すべてのタスク > エクスポート
-  - 証明書のエクスポートウィザードで、次へ > Base 64 encoded X.509 を選択して次へ
-  - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
-- 証明書を aws configure のに設定 (以下の`path\to\`には証明書を配置したディレクトリを入力)  
-  ca_bundle = C:path\to\zscalar_root_cacert.cer
-
-https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service
