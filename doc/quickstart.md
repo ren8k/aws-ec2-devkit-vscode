@@ -1,12 +1,16 @@
 # クイックスタート
 
-本リポジトリでは，Windows・Linux PC上の VSCode IDE から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率よく行えるようにするための手順を示す．
-なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode setting.json, VSCode extension なども共通のものを利用するようにしている．
+本リポジトリでは，Windows・Linux PC上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率良く行えるようにするための手順を示す．
+なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
 
 ## 目次
 
 - [クイックスタート](#クイックスタート)
   - [目次](#目次)
+  - [背景と課題](#背景と課題)
+  - [解決したいこと](#解決したいこと)
+  - [解決方法](#解決方法)
+  - [オリジナリティ](#オリジナリティ)
   - [前提](#前提)
   - [手順](#手順)
   - [手順の各ステップの詳細](#手順の各ステップの詳細)
@@ -26,6 +30,24 @@
     - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
     - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
   - [参考](#参考)
+
+## 背景と課題
+
+社内プロキシ等が存在し，AWSのクラウドコンピューティングに容易にSSH接続して開発を行えない企業では，AWS Cloud9のようなクラウドネイティブIDEを利用してチーム開発を行うことがしばしば存在しうる．Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなると思われる．加えて，Gitコマンド，Dockerコマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
+
+## 解決したいこと
+
+チーム開発でVSCodeを利用し，Linter・Formatter を統一することで，チームとしてのコーディングスタイルの統一化，コードの可動性向上，無駄な Git Commit の削減を狙う．また，難解な docker コマンド，Git コマンドを利用せずに容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにし，効率良く DevOps を回せるようにする．これにより，開発者の開発効率の向上・新規参画者への引き継ぎ工数を最小化することができる．
+
+## 解決方法
+
+ローカルPC上のVSCodeから，VSCode Remote SSHで，SSM Session Manager Plugin経由でEC2インスタンスにログインできるようにする．また，VSCode Dev Containers を利用し，開発環境（コンテナ，Linter，Formatter，IDEの設定）を共通化する．
+
+<img src="./img/vscode-ssm-ec2.png" width="500">
+
+## オリジナリティ
+
+AWS SageMaker Deep Learning Docker Imageをベースに，VSCode Dev Containersを利用して，VSCode上での開発を可能にしている．SageMaker Pipelineの開発やSageMaker Training Jobの実行のみならず，深層学習，LLMモデル実行のための環境を迅速に構築することができる．
 
 ## 前提
 
