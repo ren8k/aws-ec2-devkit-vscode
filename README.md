@@ -1,4 +1,4 @@
-# VSCode Dev Containers を利用した AWS EC2 での開発環境構築手順
+# VSCode Dev Containers を利用した AWS EC2 上での開発環境構築手順
 
 本リポジトリでは，Windows・Linux PC上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率良く行えるようにするための手順を示す．
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
