@@ -232,7 +232,7 @@ torch.cuda.is_available(): True
 VSCode DevContainersと [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．`./.devcontainer/devcontainer.json`のinitializeCommandでECRのログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWSのカスタムイメージ）をpullしている．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNetなどのフレームワークがpre-installされたイメージ（SageMaker Training Jobでの実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
 
 - VSCode上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
-  - `./.devcontainer/devcontainer.json`の`pj-name`という箇所には，各自のプロジェクト名を記述すること
+  - `./.devcontainer/devcontainer.json`の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
   - 初回のコンテナ構築時は，Dockerイメージのpullに時間がかかるため，10分~20分程度待つ．
 - `./setup/check_vm_env/check_cuda_torch.sh`を実行し，コンテナ内でGPUやpytorchが利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
 
