@@ -1,35 +1,34 @@
-# クイックスタート
+# VSCode Dev Containers を利用した AWS EC2 での開発環境構築手順
 
 本リポジトリでは，Windows・Linux PC上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率良く行えるようにするための手順を示す．
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
 
 ## 目次
 
-- [クイックスタート](#クイックスタート)
-  - [目次](#目次)
-  - [背景と課題](#背景と課題)
-  - [解決したいこと](#解決したいこと)
-  - [解決方法](#解決方法)
-  - [オリジナリティ](#オリジナリティ)
-  - [前提](#前提)
-  - [手順](#手順)
-  - [手順の各ステップの詳細](#手順の各ステップの詳細)
-    - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
-    - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
-    - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
-    - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
-      - [構築するリソース](#構築するリソース)
-      - [EC2の環境について](#ec2の環境について)
-      - [cfテンプレートの簡易説明](#cfテンプレートの簡易説明)
-    - [5. SSHの設定](#5-sshの設定)
-    - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
-    - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
-    - [8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
-  - [その他](#その他)
-    - [インスタンスの起動・停止](#インスタンスの起動停止)
-    - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
-    - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
-  - [参考](#参考)
+- [目次](#目次)
+- [背景と課題](#背景と課題)
+- [解決したいこと](#解決したいこと)
+- [解決方法](#解決方法)
+- [オリジナリティ](#オリジナリティ)
+- [前提](#前提)
+- [手順](#手順)
+- [手順の各ステップの詳細](#手順の各ステップの詳細)
+  - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
+  - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
+  - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
+  - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
+    - [構築するリソース](#構築するリソース)
+    - [EC2の環境について](#ec2の環境について)
+    - [cfテンプレートの簡易説明](#cfテンプレートの簡易説明)
+  - [5. SSHの設定](#5-sshの設定)
+  - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
+  - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
+  - [8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
+- [その他](#その他)
+  - [インスタンスの起動・停止](#インスタンスの起動停止)
+  - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
+  - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
+- [参考](#参考)
 
 ## 背景と課題
 
