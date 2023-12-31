@@ -62,28 +62,17 @@ https://qiita.com/Spritaro/items/602118d946a4383bd2bb
 
 AWS SageMaker Deep Learning Docker Imageをベースに，VSCode Dev Containersを利用して，VSCode上での開発を可能にしている．SageMaker Pipelineの開発やSageMaker Training Jobの実行のみならず，深層学習，LLMモデル実行のための環境を迅速に構築し，VSCode上で開発可能にしている．
 
-# 確認したこと（現状）
 
-VSCode-EC2 へのセキュアな接続
-EC2 を利用して CodeCommit から Clone 可能なこと
-EC2 を利用してコンテナ構築が可能なこと
-現状のコードは実行可能であること
-setting.yaml の設定
-cleanup.sh の実行
+## 以下まとめておく
 
-# TODO（これから）
+メリット、デメリット、コスト
 
 dev container の利用
 jupyter の実行とかもこれで簡単に実行可能
 VSCode のフォーマッター等の設定
 setting.json の設定とか、チーム用に考える
 VSCode の拡張機能インストール（選択してコード化）
-手順書化
-markdown で codecommit に展開
 
-## 以下まとめておく
-
-メリット、デメリット、コスト
 
 ## 止め忘れの仕組み
 
