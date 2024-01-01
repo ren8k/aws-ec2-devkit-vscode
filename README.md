@@ -42,7 +42,7 @@
 
 AWS上で開発する際，社内プロキシ等が原因でVSCodeから容易にRemote SSHできず，開発IDEとしてVSCodeを利用できない事例を多数見てきた．これにより，チーム開発時に，各メンバが異なるIDE（異なるLinter, Formatter）を利用する結果，チームとしての開発効率が低下する課題が存在する．
 
-一方，AWS Cloud9のようなクラウドネイティブIDEを利用してチーム開発を行うことで，開発IDEを統一することは可能であるが，Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなる．加えて，Gitコマンド，Dockerコマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
+一方，AWS Cloud9のようなクラウドネイティブIDEを利用してチーム開発を行うことで，開発IDEを統一することは可能である．しかし，Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなる．加えて，Gitコマンド，Dockerコマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
 
 ## 解決したいこと
 
@@ -64,14 +64,30 @@ Windows，Linux上には VScode は install されているものとする．加
 
 ## 手順
 
-1. [AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
-2. [SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
-3. [ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
-4. [CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
-5. [SSHの設定](#5-sshの設定)
-6. [VSCode から Remote SSH 接続し，EC2 インスタンスにログイン](#6-vscode-から-remote-ssh-接続しec2-インスタンスにログイン)
-7. [EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
-8. [Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
+- [背景と課題](#背景と課題)
+- [解決したいこと](#解決したいこと)
+- [解決方法](#解決方法)
+- [オリジナリティ](#オリジナリティ)
+- [前提](#前提)
+- [手順](#手順)
+- [手順の各ステップの詳細](#手順の各ステップの詳細)
+  - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
+  - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
+  - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
+  - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
+    - [構築するリソース](#構築するリソース)
+    - [EC2の環境について](#ec2の環境について)
+    - [cfテンプレートの簡易説明](#cfテンプレートの簡易説明)
+  - [5. SSHの設定](#5-sshの設定)
+  - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
+  - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
+  - [8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
+- [その他](#その他)
+  - [インスタンスの起動・停止](#インスタンスの起動停止)
+  - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
+  - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
+  - [その他Tips](#その他tips)
+- [参考](#参考)
 
 ## 手順の各ステップの詳細
 
@@ -302,9 +318,9 @@ torch.cuda.is_available(): True
 - Dockerコンテナ運用は，Dev Containersを利用することで，GUIで行うことができる．
 - `./.devcontainer/Dockerfile`の1行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
   - ECRで利用可能なカスタムイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
-  - 例えば，Stable Diffusion Web UIなどを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
+  - 例えば，Stable Diffusion系列のモデルや，Stable Diffusion Web UIなどを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
-    - ※イメージによっては，non-root userが定義されている可能性がある．その場合，Dockerfileの12~26行目はコメントアウトすること（Dockerfile内では明示的にnon-root userを作成している）
+  - イメージによっては，non-root userが定義されている可能性がある．その場合，Dockerfileの12~26行目はコメントアウトすること（Dockerfile内では明示的にnon-root userを作成している）
 
 ## 参考
 
