@@ -1,9 +1,17 @@
-# VSCode Dev Containers を利用した AWS EC2 での開発環境構築手順
+# VSCode Dev Containers を利用した AWS EC2 上での開発環境構築手順<!-- omit in toc -->
 
 本リポジトリでは，Windows・Linux PC上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習やLLM ソフトウェア開発を効率良く行えるようにするための手順を示す．
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
 
-## 目次
+## TL;DR <!-- omit in toc -->
+
+以下のTipsを整理し，手順書としてまとめた．また，最小限の手順で済むよう，batファイルやshellスクリプトを用意している．
+
+- SSM経由でVSCodeからEC2にセキュアにSSH接続する方法
+- チーム開発時のIDEとしてVSCodeを利用し，Flake8，Black，Mypyを共通的に利用する方法
+- AWS Deep Learning Containers Images をベースに Dev Containers上で開発するための方法
+
+## 目次<!-- omit in toc -->
 
 - [背景と課題](#背景と課題)
 - [解決したいこと](#解決したいこと)
@@ -27,15 +35,18 @@
   - [インスタンスの起動・停止](#インスタンスの起動停止)
   - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
   - [チームでのEC2の運用・管理](#チームでのec2の運用管理)
+  - [その他Tips](#その他tips)
 - [参考](#参考)
 
 ## 背景と課題
 
-社内プロキシが存在し，AWSのクラウドコンピューティングに容易にSSH接続して開発を行えない企業では，AWS Cloud9のようなクラウドネイティブIDEを利用してチーム開発を行うことがしばしば存在しうる．Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなると思われる．加えて，Gitコマンド，Dockerコマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
+AWS上で開発する際，社内プロキシ等が原因でVSCodeから容易にRemote SSHできず，開発IDEとしてVSCodeを利用できない事例を多数見てきた．これにより，チーム開発時に，各メンバが異なるIDE（異なるLinter, Formatter）を利用する結果，チームとしての開発効率が低下する課題が存在する．
+
+一方，AWS Cloud9のようなクラウドネイティブIDEを利用してチーム開発を行うことで，開発IDEを統一することは可能であるが，Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなる．加えて，Gitコマンド，Dockerコマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
 
 ## 解決したいこと
 
-チーム開発でVSCodeを利用し，Linter・Formatter を統一することで，チームとしてのコーディングスタイルの統一化，コードの可動性向上，無駄な Git Commit の削減を狙う．また，難解な docker コマンド，Git コマンドを利用せずに容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにし，効率良く DevOps を回せるようにする．これにより，開発者の開発効率の向上・新規参画者への引き継ぎ工数を最小化することができる．
+チーム開発でVSCodeを利用し，Linter・Formatter を統一することで，チームとしてのコーディングスタイルの統一化，コードの可動性向上，無駄な Git Commit の削減を狙う．また，初学者には敷居の高い docker コマンドや Git コマンドを利用せずに，容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにし，効率良く DevOps を回せるようにする．これにより，開発者の開発効率の向上・新規参画者への引き継ぎ工数を最小化することができる．
 
 ## 解決方法
 
@@ -45,7 +56,7 @@
 
 ## オリジナリティ
 
-[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)をベースに，VSCode Dev Containersを利用して，VSCode上での開発を可能にしている．SageMaker Pipelineの開発やSageMaker Training Jobの実行のみならず，深層学習，LLMモデル実行のための環境を迅速に構築することができる．
+[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)をベースに，VSCode Dev Containersを利用して，VSCode上での開発を可能にしている．これにより，SageMaker Pipelineの開発やSageMaker Training Jobの実行のみならず，深層学習，SageMaker Jumpstart等で提供されていないFMの実行のための環境を迅速に構築することができる．
 
 ## 前提
 
@@ -53,14 +64,14 @@ Windows，Linux上には VScode は install されているものとする．加
 
 ## 手順
 
-1. AWS CLI のインストールとセットアップ
-2. SSM Session Manager plugin のインストール
-3. ローカルの VSCode に extension をインストール
-4. CloudFormation で，EC2 を構築
-5. SSHの設定
-6. VSCode から Remote SSH 接続し，EC2 インスタンスにログイン
-7. EC2 インスタンスに VSCode extension をインストール
-8. Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築
+1. [AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
+2. [SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
+3. [ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
+4. [CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
+5. [SSHの設定](#5-sshの設定)
+6. [VSCode から Remote SSH 接続し，EC2 インスタンスにログイン](#6-vscode-から-remote-ssh-接続しec2-インスタンスにログイン)
+7. [EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
+8. [Dev Containers と AWS Deep Learning Containers Imagesを利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-imagesを利用したコンテナの構築)
 
 ## 手順の各ステップの詳細
 
@@ -77,7 +88,7 @@ AWS Secret Access Key [None]: IAM ユーザーの作成時にダウンロード�
 Default region name [None]: ap-northeast-1
 Default output format [None]: json
 ```
-- Zscalerなどの社内プロキシを利用している場合は，`.aws/config`に以下を追記する．例えば，Zscalerを利用している場合は，以下のようにCA 証明書のフルパスを記述する．CA 証明書のエクスポート方法は後述するので，必要があれば適宜参考にされたい．．
+- Zscalerなどの社内プロキシを利用している場合は，`.aws/config`に以下を追記する．例えば，Zscalerを利用している場合は，以下のようにCA 証明書のフルパスを記述する．CA 証明書のエクスポート方法は後述するので，必要があれば適宜参考にされたい．
 
 ```
 ca_bundle = C:\path\to\zscalar_root_cacert.cer
@@ -175,7 +186,7 @@ Deep Learning用のAMIを利用しているため，以下が全てインスト�
 
 ### 5. SSHの設定
 
-`./setup/get_aws_keypair/get_key_win.bat`を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linuxの場合は`./setup/get_aws_keypair/get_key_linux.sh`を実行すること．なお，実行前に．ソースコードの変数`KEY_ID`と`INSTANCE_ID`にはCloudFormationの実行結果の各値を記述すること．
+`./setup/get_aws_keypair/get_key_win.bat`を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linuxの場合は`./setup/get_aws_keypair/get_key_linux.sh`を実行すること．なお，実行前に，ソースコードの変数`KEY_ID`と`INSTANCE_ID`にはCloudFormationの実行結果の各値を記述すること．
 
 ### 6. VSCode から EC2 インスタンスにログイン
 
@@ -284,6 +295,16 @@ torch.cuda.is_available(): True
 ### チームでのEC2の運用・管理
 
 インスタンスの切り忘れ防止のために，AWS Lambdaを利用して，夜12時に全てのEC2インスタンスを停止させている．なお，運用サーバーなど特定のインスタンスは除外可能にできるようにしている．詳細は，[./docs/operation_ec2.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/operation_ec2.md)を参照されたい．
+
+### その他Tips
+
+- Git運用は，Git Graphを利用することで，GUIで行うことができる．
+- Dockerコンテナ運用は，Dev Containersを利用することで，GUIで行うことができる．
+- `./.devcontainer/Dockerfile`の1行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
+  - ECRで利用可能なカスタムイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
+  - 例えば，Stable Diffusion Web UIなどを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
+    - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
+    - ※イメージによっては，non-root userが定義されている可能性がある．その場合，Dockerfileの12~26行目はコメントアウトすること（Dockerfile内では明示的にnon-root userを作成している）
 
 ## 参考
 

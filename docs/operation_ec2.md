@@ -3,13 +3,13 @@
 Cloud9などで開発する場合，自動シャットダウン機能がデフォルトで提供されているため，インスタンスの消し忘れを防ぐことができる．しかし，VSCode Remote Developmentを利用してEC2で開発する場合，自動シャットダウン機能が提供されていないため，消し忘れが発生しやすい．そこで，LambdaとEventBridgeを利用し，夜12時に全てのEC2インスタンスを停止させるように運用している.また，特定のインスタンスは停止の対象外にできるようにしている．
 
 ## 実行コード
-`./setup/lambda/lambda_stop_ec2.py`を夜12時に定期実行している．コードでは，指定のリージョンのインスタンスを全て停止させている．
+`./ops_ec2/lambda_function.py`を夜12時に定期実行している．コードでは，指定のリージョンのインスタンスを全て停止させている．
 
 ## 工夫点
 環境変数`EXCLUDED_INSTANCE_IDS`に特定のインスタンスは停止の対象外にできるように工夫している．
 
 ```python
-# `./setup/lambda/lambda_stop_ec2.py`
+# ./ops_ec2/lambda_function.py
 import boto3
 import os
 
