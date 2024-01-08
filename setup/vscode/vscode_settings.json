@@ -25,5 +25,9 @@
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.variableTypes": true,
   "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": "active"
+  "editor.guides.bracketPairs": "active",
+  // markdown
+  "[markdown]": {
+    "editor.wordWrap": "bounded"
+  }
 }
