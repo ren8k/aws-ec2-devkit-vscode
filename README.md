@@ -107,7 +107,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 - コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
 - Zscalar Root CA を左クリック > すべてのタスク > エクスポート
-  - 証明書のエクスポートウィザードで、次へ > Base 64 encoded X.509 を選択して次へ
+  - 証明書のエクスポートウィザードで，次へ > Base 64 encoded X.509 を選択して次へ
   - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
 
 </details>
