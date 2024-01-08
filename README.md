@@ -121,7 +121,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 ### 3. ローカルの VSCode に extension をインストール
 
-`./setup/vscode/vscode_local_setup_win.bat`を実行し，VSCode の extension を一括インストールする．Linux の場合は，`./setup/vscode/vscode_local_setup_linux.sh`を実行する．本バッチファイル，または shell の実行により，以下の extension がインストールされる．
+[`./setup/vscode/vscode_local_setup_win.bat`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_local_setup_win.bat)を実行し，VSCode の extension を一括インストールする．Linux の場合は，[`./setup/vscode/vscode_local_setup_linux.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_local_setup_linux.sh)を実行する．本バッチファイル，または shell の実行により，以下の extension がインストールされる．
 
 - vscode-remote-extensionpack: VSCode でリモート開発を行うための extension
 - aws-toolkit-vscode: AWS の各種サービスを VSCode から操作するための extension
@@ -129,7 +129,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 ### 4. CloudFormation で EC2 を構築
 
-`./setup/cf-template/cf-ec2.yaml`（cf テンプレート）を利用し，CloudFormation で EC2 を構築する．以下に実際に構築されるリソースと，cf テンプレートの簡易説明を行う．また，CloudFormation の詳細な実行方法は後述しているので，必要があれば適宜参照されたい．
+[`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)（cf テンプレート）を利用し，CloudFormation で EC2 を構築する．以下に実際に構築されるリソースと，cf テンプレートの簡易説明を行う．また，CloudFormation の詳細な実行方法は後述しているので，必要があれば適宜参照されたい．
 
 #### 構築するリソース
 
@@ -177,7 +177,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 - [CloudFormation コンソール](https://console.aws.amazon.com/cloudformation/)を開き，スタックの作成を押下
 - テンプレートの指定 > テンプレートファイルのアップロード > ファイルの選択で上記で作成した yaml ファイルを指定し，次へを押下
-  - `./setup/cf-template/cf-ec2.yaml`を upload する．
+  - [`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)を upload する．
 - 任意のスタック名を入力後，以下のパラメータを設定する
   - EC2InstanceType: インスタンスタイプ．デフォルトは g4dn.xlarge
   - VolumeSize: ボリュームサイズ．デフォルトは 100GB
@@ -192,7 +192,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 ### 5. SSH の設定
 
-`./setup/get_aws_keypair/get_key_win.bat`を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linux の場合は`./setup/get_aws_keypair/get_key_linux.sh`を実行すること．なお，実行前に，ソースコードの変数`KEY_ID`と`INSTANCE_ID`には CloudFormation の実行結果の各値を記述すること．
+[`./setup/get_aws_keypair/get_key_win.bat`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_win.bat)を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linux の場合は[`./setup/get_aws_keypair/get_key_linux.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_linux.sh)を実行すること．なお，実行前に，ソースコードの変数`KEY_ID`と`INSTANCE_ID`には CloudFormation の実行結果の各値を記述すること．
 
 ### 6. VSCode から EC2 インスタンスにログイン
 
@@ -203,8 +203,8 @@ VSCode のリモート接続機能を利用して，SSM Session Manager Plugin �
 - リモート側の初期設定が終わるまで 30 秒程度待つ．（Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること）
   - ※スタックの作成が完了しても，cf テンプレート内の UserData の shell 実行が終わるまで待つ必要があるため注意．（最長 5 分~10 分程度待つ．UserData の実行ログは`/var/log/cloud-init-output.log`で確認できる．）
 - EC2 インスタンスにログイン後，インスタンス上に本リポジトリを clone する．
-- `conda activate pytorch`実行後，`./setup/check_vm_env/check_cuda_torch.sh`を実行し，EC2 インスタンス上で GPU や pytorch が利用可能であることを確認する．以下のような出力が表示されるはず．
-  - pytorch を利用した MNIST の画像分類の学習を行うスクリプト`./setup/check_vm_env/mnist_example/mnist.py`を用意しているため，これを実行しても構わない．
+- `conda activate pytorch`実行後，[`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，EC2 インスタンス上で GPU や pytorch が利用可能であることを確認する．以下のような出力が表示されるはず．
+  - pytorch を利用した MNIST の画像分類の学習を行うスクリプト[`./setup/check_vm_env/mnist_example/mnist.py`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/mnist_example/mnist.py)を用意しているため，これを実行しても構わない．
 
 ```
 ==============check cuda==============
@@ -242,16 +242,16 @@ torch.cuda.is_available(): True
 
 ### 7. EC2 インスタンスに VSCode extension をインストール
 
-- `./setup/vscode/vscode_vm_setup.sh`を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード中の`NAME`と`MAIL`には，各自の名前とメールアドレスを記述すること．
+[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード中の`NAME`と`MAIL`には，各自の名前とメールアドレスを記述すること．
 
 ### 8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築
 
-VSCode DevContainers と [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．`./.devcontainer/devcontainer.json`の initializeCommand で ECR のログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWS のカスタムイメージ）を pull している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNet などのフレームワークが pre-install されたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
+VSCode DevContainers と [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の initializeCommand で ECR のログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWS のカスタムイメージ）を pull している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，Pytorch, Tensorflow, MXNet などのフレームワークが pre-install されたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用イメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
 
 - VSCode 上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
-  - `./.devcontainer/devcontainer.json`の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
+  - [`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
   - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分~20 分程度待つ．
-- `./setup/check_vm_env/check_cuda_torch.sh`を実行し，コンテナ内で GPU や pytorch が利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
+- [`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，コンテナ内で GPU や pytorch が利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
 
 ```
 ==============check cuda==============
@@ -305,11 +305,12 @@ torch.cuda.is_available(): True
 
 - Git 運用は，Git Graph を利用することで，GUI で行うことができる．
 - Docker コンテナ運用は，Dev Containers を利用することで，GUI で行うことができる．
-- `./.devcontainer/Dockerfile`の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
+- [`./.devcontainer/Dockerfile`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/Dockerfile)の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
   - ECR で利用可能なカスタムイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
   - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~26 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
+    - Dev Containers の`remoteUser` property を，[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)に追記しても良い．詳細は，VSCode の公式ドキュメント[^5]を参照されたい．
 
 ## 参考
 
@@ -317,3 +318,4 @@ torch.cuda.is_available(): True
 [^2]: [AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
 [^3]: [CA 証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
 [^4]: [Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
+[^5]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
