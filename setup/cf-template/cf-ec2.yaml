@@ -74,6 +74,35 @@ Resources:
           Value: !Sub ${AWS::StackName}-cf-sg
   EC2Instance:
     Type: AWS::EC2::Instance
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT30M
+    Metadata:
+        AWS::CloudFormation::Init:
+          config:
+            commands:
+              01_upgrade_git:
+                command: |
+                  sudo -E add-apt-repository ppa:git-core/ppa -y
+                  sudo apt-get update && sudo apt-get -y upgrade
+              02_setup_git_credential:
+                command: |
+                  git config --global credential.helper '!aws codecommit credential-helper $@'
+                  git config --global credential.UseHttpPath true
+              03_uninstall_awscli_v1:
+                command: |
+                  sudo rm -rf /usr/local/aws
+                  sudo rm /usr/local/bin/aws
+                  sudo rm -r ~/.aws/
+              04_install_awscli_v2:
+                command: |
+                  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                  unzip awscliv2.zip
+                  sudo ./aws/install
+                  sudo rm aws/ -r
+                  sudo rm awscliv2.zip
+              05_init_conda:
+                command: "conda init bash"
     Properties:
       AvailabilityZone: ap-northeast-1a
       ImageId: !Ref ImageId
@@ -94,29 +123,13 @@ Resources:
         #!/bin/bash
         export HOME=/home/ubuntu
 
-        echo upgrade git
-        sudo -E add-apt-repository ppa:git-core/ppa -y
-        sudo apt-get update && sudo apt-get -y upgrade
-        git config --global init.defaultBranch main
+        echo exec cfn-init
+        /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
 
-        echo setup git credential
-        git config --global credential.helper '!aws codecommit credential-helper $@'
-        git config --global credential.UseHttpPath true
+        echo send cfn-signal
+        /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
 
-        echo uninstall awscli v1
-        sudo rm -rf /usr/local/aws
-        sudo rm /usr/local/bin/aws
-        sudo rm -r ~/.aws/
-
-        echo install awscli v2
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install
-        sudo rm aws/ -r
-        sudo rm awscliv2.zip
-
-        echo init conda
-        conda init bash
+        echo reboot ec2
         sudo reboot
       Tags:
         - Key: Name
