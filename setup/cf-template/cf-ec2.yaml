@@ -123,11 +123,15 @@ Resources:
         #!/bin/bash
         export HOME=/home/ubuntu
 
+        echo install sfn-signal
+        pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz
+        sudo ln -s /usr/local/init/ubuntu/cfn-hup /etc/init.d/cfn-hup
+
         echo exec cfn-init
-        /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
+        /usr/local/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance --region ap-northeast-1
 
         echo send cfn-signal
-        /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource EC2Instance --region ${AWS::Region}
+        /usr/local/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource EC2Instance --region ap-northeast-1
 
         echo reboot ec2
         sudo reboot
