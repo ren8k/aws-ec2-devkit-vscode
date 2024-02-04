@@ -8,7 +8,7 @@
 	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
 	"runArgs": [
 		"--name",
-		"kgl",
+		"pj-name",	// set your pj name
 		"--gpus",
 		"all",
 		"--shm-size",

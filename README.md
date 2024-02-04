@@ -60,7 +60,7 @@ AWS 上で開発する際，社内プロキシ等が原因で VSCode から容�
 
 ## 前提
 
-Windows，Linux 上には VScode は install されているものとする．加え，AWS ユーザーは作成済みであり，Administrator 相当の権限を保持していることを想定している．なお，手順書中では，Windows でのセットアップに主眼を起き記述している．（Linux でも同様の手順で実施可能．）
+Windows，Linux 上には VSCode は install されているものとする．加え，AWS ユーザーは作成済みであり，Administrator 相当の権限を保持していることを想定している．なお，手順書中では，Windows でのセットアップに主眼を起き記述している．（Linux でも同様の手順で実施可能．）
 
 ## 手順
 
