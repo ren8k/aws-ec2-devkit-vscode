@@ -1,0 +1,149 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS EC2 environment for remote connection from VSCode to experiment with deep learning. This file create EC2, IAMRole, Security Group, and EC2 Key pair.
+Parameters:
+  ImageId:
+    Description: Amazon Machine Image (AMI)
+    Type: String
+    Default: ami-05494db6fe40e0cfd
+  EC2InstanceType:
+    Description: EC2 instance type on which IDE runs
+    Type: String
+    Default: g4dn.xlarge
+  VolumeSize:
+    Description: root volume size
+    Type: String
+    Default: 100
+  VPCId:
+    Description: VPC ID where the instance will be launched
+    Type: String
+    Default: vpc-XXXXXXXXXXXXXXXXX
+  SubnetId:
+    Description: Public subnet in vpc (For example, check your pucblic-subnet ip in default vpc.)
+    Type: String
+    Default: subnet-XXXXXXXXXXXXXXXXX
+Resources:
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeCommitFullAccess
+        - arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+      RoleName: !Sub ${AWS::StackName}-cf-remote-development-role
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-cf-remote-development-role
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2InstanceRole
+  NewKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: !Sub ${AWS::StackName}-cf-key
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-cf-key
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPCId
+      GroupDescription: for remote development
+      GroupName: !Sub ${AWS::StackName}-cf-sg
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: -1
+          IpProtocol: -1
+          ToPort: -1
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-cf-sg
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    CreationPolicy:
+      ResourceSignal:
+        Count: 1
+        Timeout: PT15M
+    Properties:
+      AvailabilityZone: ap-northeast-1a
+      ImageId: !Ref ImageId
+      InstanceType: !Ref EC2InstanceType
+      KeyName: !Ref NewKeyPair
+      SecurityGroupIds:
+        - !GetAtt EC2SecurityGroup.GroupId
+      SubnetId: !Ref SubnetId
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: gp3
+            VolumeSize: !Ref VolumeSize
+            DeleteOnTermination: "true"
+            Encrypted: "false"
+      UserData: !Base64 |
+        #!/bin/bash
+        export HOME=/home/ubuntu
+
+        echo install sfn-signal
+        pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz
+        sudo ln -s /usr/local/init/ubuntu/cfn-hup /etc/init.d/cfn-hup
+
+        echo upgrade git
+        sudo -E add-apt-repository ppa:git-core/ppa -y
+        sudo apt-get update && sudo apt-get -y upgrade
+        git config --global init.defaultBranch main
+
+        echo setup git credential
+        git config --global credential.helper '!aws codecommit credential-helper $@'
+        git config --global credential.UseHttpPath true
+
+        echo uninstall awscli v1
+        sudo rm -rf /usr/local/aws
+        sudo rm /usr/local/bin/aws
+        sudo rm -r ~/.aws/
+
+        echo install awscli v2
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+        sudo rm aws/ -r
+        sudo rm awscliv2.zip
+
+        echo init conda
+        conda init bash
+
+        echo sudo find / -name cfn-signal
+        sudo find / -name cfn-signal
+
+        echo send cfn-signal 2 /usr/local/bin/cfn-signal
+        /usr/local/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource EC2Instance --region ap-northeast-1
+
+        echo reboot
+        sudo reboot
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-cf-ec2
+Outputs:
+  InstanceId:
+    Description: The Instance ID
+    Value: !Ref EC2Instance
+  InstanceRoleArn:
+    Description: The Instance Role ARN
+    Value: !GetAtt EC2InstanceRole.Arn
+  KeyID:
+    Description: The Key ID
+    Value: !GetAtt NewKeyPair.KeyPairId
