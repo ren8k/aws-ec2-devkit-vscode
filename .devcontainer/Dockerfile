@@ -8,7 +8,7 @@ COPY ./requirements.txt /tmp/
 # install libraries
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-# Add non-root user
+# add non-root user
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
