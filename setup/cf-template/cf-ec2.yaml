@@ -32,6 +32,7 @@ Resources:
             Principal:
               Service:
                 - ec2.amazonaws.com
+                - sagemaker.amazonaws.com
             Action:
               - sts:AssumeRole
       ManagedPolicyArns:
