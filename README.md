@@ -14,7 +14,7 @@
 ## 目次<!-- omit in toc -->
 
 - [背景と課題](#背景と課題)
-- [解決したいこと](#解決したいこと)
+- [目的](#目的)
 - [解決方法](#解決方法)
 - [オリジナリティ](#オリジナリティ)
 - [前提](#前提)
@@ -44,7 +44,7 @@ AWS 上で開発する際，社内プロキシ等が原因で VSCode から容�
 
 一方，AWS Cloud9 のようなクラウドネイティブ IDE を利用してチーム開発を行うことで，開発 IDE を統一することは可能である．しかし，Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなる．加えて，Git コマンド，Docker コマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
 
-## 解決したいこと
+## 目的
 
 チーム開発で VSCode を利用し，Linter・Formatter を統一することで，チームとしてのコーディングスタイルの統一化，コードの可動性向上，無駄な Git Commit の削減を狙う．また，初学者には敷居の高い docker コマンドや Git コマンドを利用せずに，容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにし，効率良く DevOps を回せるようにする．これにより，開発者の開発効率の向上・新規参画者への引き継ぎ工数を最小化することができる．
 
@@ -148,8 +148,8 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 #### cf テンプレートの簡易説明
 
-- VPC とサブネットの ID をユーザー側で記述する必要がある
-  - default vpc のパブリックサブネット等を選択すれば良い
+- VPC とサブネット ID をユーザー側で記述する必要がある
+  - default VPC のパブリックサブネット等を選択すれば良い
 - EC2 へのリモートアクセス・開発に必要と想定されるポリシーをアタッチしたロールは自動作成される．以下のポリシーをアタッチしている．
   - AmazonSSMManagedInstanceCore
   - AmazonS3FullAccess
@@ -174,13 +174,13 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 - [CloudFormation コンソール](https://console.aws.amazon.com/cloudformation/)を開き，スタックの作成を押下
 - テンプレートの指定 > テンプレートファイルのアップロード > ファイルの選択で上記で作成した yaml ファイルを指定し，次へを押下
-  - [`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)を upload する．
-- 任意のスタック名を入力後，以下のパラメータを設定する
+  - [`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)を upload する
+- 任意のスタック名（利用者名などでよい）を入力後，以下のパラメータを設定・変更する
   - EC2InstanceType: インスタンスタイプ．デフォルトは g4dn.xlarge
-  - VolumeSize: ボリュームサイズ．デフォルトは 100GB
-  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch 2.0.1 の ID
-  - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
+  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch 2.1.0 の ID
   - SubnetID: 利用するパブリックサブネットの ID（デフォルト VPC のパブリックサブネット ID 等で問題ない）
+  - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
+  - VolumeSize: ボリュームサイズ．デフォルトは 100GB  
 - 適切な IAM Role をアタッチし，次へを押下（一時的に Admin role で実施しても良いかもしれない）
 - 作成されるまで 30 秒~1 分ほど待つ
 
