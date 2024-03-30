@@ -308,6 +308,12 @@ torch.cuda.is_available(): True
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
     - Dev Containers の`remoteUser` property を，[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)に追記しても良い．詳細は，VSCode の公式ドキュメント[^5]を参照されたい．
+- EC2インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
+  - `ec2-farm`を開き，右クリックで EC2 を起動 or 停止が可能
+- リモートのDev Container環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
+  - Project Managerに登録したい Dev Container 環境を VSCode で起動
+  - `Project Manager`を開き，Save Projectを選択し，Dev Container 環境を登録（任意の名前で保存可能）
+  - 次回以降は，`ec2-farm`で EC2 を起動後，`Project Manager`に表示されたDev Container名を選択することで，ssh 接続および Dev Container起動と接続までが一度に実行可能
 
 ## 参考
 
