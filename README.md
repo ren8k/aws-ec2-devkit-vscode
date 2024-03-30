@@ -248,6 +248,7 @@ VSCode DevContainers と [AWS Deep Learning Containers Images](https://github.co
 - VSCode 上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
   - [`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
   - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分~20 分程度待つ．
+  - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - [`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，コンテナ内で GPU や pytorch が利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
 
 ```
