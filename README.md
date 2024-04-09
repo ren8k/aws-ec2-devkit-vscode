@@ -301,7 +301,9 @@ torch.cuda.is_available(): True
 
 ### その他 Tips
 
-- Git 運用は，Git Graph を利用することで，GUI で行うことができる．
+#### VSCode Extension
+
+- Git 運用は，インストールした extension の Git Graph を利用することで，GUI で行うことができる．
 - Docker コンテナ運用は，Dev Containers を利用することで，GUI で行うことができる．
 - [`./.devcontainer/Dockerfile`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/Dockerfile)の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
   - ECR で利用可能なイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
@@ -315,6 +317,14 @@ torch.cuda.is_available(): True
   - Project Managerに登録したい Dev Container 環境を VSCode で起動
   - `Project Manager`を開き，Save Project (小さいディスクのアイコン) を選択し，Dev Container 環境を登録（任意の名前で保存可能）
   - 次回以降は，`ec2-farm`で EC2 を起動後，`Project Manager`に表示された Dev Container名を選択することで，ssh 接続および Dev Container起動と接続までが一度に実行可能
+
+#### CPUインスタンスで開発したい場合
+
+- EC2 インスタンスのインスタンスタイプを、`m5.xlarge`などに変更する
+  - 利用しているAMIではGPUインスタンス以外は非推奨だが、問題なく動作した
+- `.devcontainer/devcontainer.json`の12行目と13行目をコメントアウトする
+  - docker コマンドの引数`--gpus all`を除外する
+- コンテナのリビルドを実行する
 
 ## 参考
 
