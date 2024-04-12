@@ -58,7 +58,6 @@
 				// python
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"ms-toolsai.vscode-ai",
 				"ms-python.black-formatter",
 				"ms-python.flake8",
 				"ms-python.isort",
@@ -85,7 +84,10 @@
 				"janisdd.vscode-edit-csv",
 				"monokai.theme-monokai-pro-vscode",
 				"vscode-icons-team.vscode-icons",
-				"MS-CEINTL.vscode-language-pack-ja"
+				"MS-CEINTL.vscode-language-pack-ja",
+				// other
+				"github.copilot",
+				"github.copilot-chat"
 			]
 		}
 	}
