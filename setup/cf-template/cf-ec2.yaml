@@ -43,6 +43,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
         - arn:aws:iam::aws:policy/SecretsManagerReadWrite
         - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+        - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
       RoleName: !Sub ${AWS::StackName}-cf-remote-development-role
       Tags:
         - Key: Name
