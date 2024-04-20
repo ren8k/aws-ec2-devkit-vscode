@@ -158,6 +158,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
   - AmazonSageMakerFullAccess
   - SecretsManagerReadWrite
   - AWSLambda_FullAccess
+  - AmazonBedrockFullAccess
 - セキュリティグループも自動作成しており，インバウンドは全てシャットアウトしている
 - SSH 接続で利用する Key Pair を作成している
 - EC2 インスタンス作成時，以下を自動実行している
