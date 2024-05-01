@@ -100,7 +100,10 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 <summary>※Zscaler CA 証明書のエクスポート方法</summary>
 <br/>
 
-公式ドキュメント[^3]を参考に，エクスポートする．
+Zscaler を利用してプロキシエージェント経由で通信を行う場合，Zscaler では SSL インスペクションの設定がなされているため，https 通信を行うときにルート証明書の情報が Zscaler のものに上書きされる．
+そのため，Zscaler のルート証明書を実行環境の証明書の信頼リストに登録しなければ https 通信が失敗する場合がある．
+
+公式ドキュメント[^3]を参考に，Zscaler のルート証明書をエクスポートする．
 
 - コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
 - Zscalar Root CA を左クリック > すべてのタスク > エクスポート
@@ -181,7 +184,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
   - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch 2.1.0 の ID
   - SubnetID: 利用するパブリックサブネットの ID（デフォルト VPC のパブリックサブネット ID 等で問題ない）
   - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
-  - VolumeSize: ボリュームサイズ．デフォルトは 100GB  
+  - VolumeSize: ボリュームサイズ．デフォルトは 100GB
 - 適切な IAM Role をアタッチし，次へを押下（一時的に Admin role で実施しても良いかもしれない）
 - 作成されるまで 30 秒~1 分ほど待つ
 
@@ -312,18 +315,18 @@ torch.cuda.is_available(): True
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
     - Dev Containers の`remoteUser` property を，[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)に追記しても良い．詳細は，VSCode の公式ドキュメント[^5]を参照されたい．
-- EC2インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
+- EC2 インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
   - `ec2-farm`を開き，右クリックで EC2 を起動 or 停止が可能
-- リモートのDev Container環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
-  - Project Managerに登録したい Dev Container 環境を VSCode で起動
+- リモートの Dev Container 環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
+  - Project Manager に登録したい Dev Container 環境を VSCode で起動
   - `Project Manager`を開き，Save Project (小さいディスクのアイコン) を選択し，Dev Container 環境を登録（任意の名前で保存可能）
-  - 次回以降は，`ec2-farm`で EC2 を起動後，`Project Manager`に表示された Dev Container名を選択することで，ssh 接続および Dev Container起動と接続までが一度に実行可能
+  - 次回以降は，`ec2-farm`で EC2 を起動後，`Project Manager`に表示された Dev Container 名を選択することで，ssh 接続および Dev Container 起動と接続までが一度に実行可能
 
-#### CPUインスタンスで開発したい場合
+#### CPU インスタンスで開発したい場合
 
 - EC2 インスタンスのインスタンスタイプを、`m5.xlarge`などに変更する
-  - 利用しているAMIではGPUインスタンス以外は非推奨だが、問題なく動作した
-- `.devcontainer/devcontainer.json`の12行目と13行目をコメントアウトする
+  - 利用している AMI では GPU インスタンス以外は非推奨だが、問題なく動作した
+- `.devcontainer/devcontainer.json`の 12 行目と 13 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
 
