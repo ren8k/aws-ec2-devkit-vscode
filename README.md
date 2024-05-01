@@ -100,8 +100,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 <summary>※Zscaler CA 証明書のエクスポート方法</summary>
 <br/>
 
-Zscaler を利用してプロキシエージェント経由で通信を行う場合，Zscaler では SSL インスペクションの設定がなされているため，https 通信を行うときにルート証明書の情報が Zscaler のものに上書きされる．
-そのため，Zscaler のルート証明書を実行環境の証明書の信頼リストに登録しなければ https 通信が失敗する場合がある．
+Zscaler を利用してプロキシエージェント経由で通信を行う場合，Zscaler では SSL インスペクションの設定がなされているため，https 通信を行うときにルート証明書の情報が Zscaler のものに上書きされる．そのため，Zscaler のルート証明書を実行環境の証明書の信頼リストに登録しなければ https 通信が失敗する場合がある．
 
 公式ドキュメント[^3]を参考に，Zscaler のルート証明書をエクスポートする．
 
