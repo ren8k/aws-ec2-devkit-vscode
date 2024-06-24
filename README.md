@@ -102,12 +102,20 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 Zscaler を利用してプロキシエージェント経由で通信を行う場合，Zscaler では SSL インスペクションの設定がなされているため，https 通信を行うときにルート証明書の情報が Zscaler のものに上書きされる．そのため，Zscaler のルート証明書を実行環境の証明書の信頼リストに登録しなければ https 通信が失敗する場合がある．
 
+**Windowsの場合**
+
 公式ドキュメント[^3]を参考に，Zscaler のルート証明書をエクスポートする．
 
 - コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
 - Zscalar Root CA を左クリック > すべてのタスク > エクスポート
   - 証明書のエクスポートウィザードで，次へ > Base 64 encoded X.509 を選択して次へ
   - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
+
+**macOSの場合**
+
+- Keychainを開き，システムチェーン -> システム の中にあるZscaler Root CA を右クリック
+- 「"Zscaler Root CA"を書き出す...」 を選択
+- `/path/to/zscalar_root_cacert.cer`などのファイル名で，任意のパスに保存
 
 </details>
 <br/>
@@ -323,8 +331,8 @@ torch.cuda.is_available(): True
 
 #### CPU インスタンスで開発したい場合
 
-- EC2 インスタンスのインスタンスタイプを、`m5.xlarge`などに変更する
-  - 利用している AMI では GPU インスタンス以外は非推奨だが、問題なく動作した
+- EC2 インスタンスのインスタンスタイプを，`m5.xlarge`などに変更する
+  - 利用している AMI では GPU インスタンス以外は非推奨だが，問題なく動作した
 - `.devcontainer/devcontainer.json`の 12 行目と 13 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
