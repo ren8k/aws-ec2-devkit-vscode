@@ -14,7 +14,7 @@ Parameters:
     Type: String
     Default: 100
   VPCId:
-    Description: VPC ID where the instance will be launched
+    Description: VPC ID where the instance will be launched (For example, check your default vpc.)
     Type: String
     Default: vpc-XXXXXXXXXXXXXXXXX
   SubnetId:
