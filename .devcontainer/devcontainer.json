@@ -3,8 +3,8 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"workspaceFolder": "/app/pj-name", // set your pj name suffix
-	"workspaceMount": "source=${localWorkspaceFolder},target=/app/pj-name,type=bind,consistency=cached", // set your pj name suffix in target
+	"workspaceFolder": "/app/pj-name", // set your pj name as suffix
+	"workspaceMount": "source=${localWorkspaceFolder},target=/app/pj-name,type=bind,consistency=cached", // set your pj name as suffix in target
 	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
 	"runArgs": [
 		"--name",
