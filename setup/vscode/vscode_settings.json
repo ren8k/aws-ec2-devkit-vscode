@@ -13,6 +13,7 @@
       "source.organizeImports": true
     }
   },
+  "python.defaultInterpreterPath": "/opt/conda/envs/pytorch/bin/python",
   // formatter
   "isort.args": ["--profile", "black"],
   // linter
