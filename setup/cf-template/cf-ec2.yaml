@@ -4,7 +4,7 @@ Parameters:
   ImageId:
     Description: Amazon Machine Image (AMI)
     Type: String
-    Default: ami-05494db6fe40e0cfd
+    Default: ami-09829527b1a93f365
   EC2InstanceType:
     Description: EC2 instance type on which IDE runs
     Type: String
