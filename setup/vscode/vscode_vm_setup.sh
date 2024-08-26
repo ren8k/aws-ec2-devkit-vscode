@@ -1,10 +1,11 @@
 #!/bin/bash
-NAME="username"
-MAIL="username@example.com"
+# prompt for name and email
+read -p "Enter your name: " NAME
+read -p "Enter your email: " MAIL
 
 # git
-git config --global user.name $NAME
-git config --global user.email $MAIL
+git config --global user.name "$NAME"
+git config --global user.email "$MAIL"
 git config --global core.editor vim
 
 # codecommit credential
@@ -15,7 +16,6 @@ git config --global credential.UseHttpPath true
 ## python
 code --install-extension ms-python.python
 code --install-extension ms-python.vscode-pylance
-code --install-extension ms-toolsai.vscode-ai
 code --install-extension ms-python.black-formatter
 code --install-extension ms-python.flake8
 code --install-extension ms-python.isort
@@ -45,6 +45,10 @@ code --install-extension janisdd.vscode-edit-csv
 code --install-extension monokai.theme-monokai-pro-vscode
 code --install-extension vscode-icons-team.vscode-icons
 code --install-extension MS-CEINTL.vscode-language-pack-ja
+## other
+code --install-extension github.copilot
+code --install-extension github.copilot-chat
+code --install-extension amazonwebservices.aws-toolkit-vscode
 
 # vscode settings
 cp vscode_settings.json ~/.vscode-server/data/Machine/settings.json

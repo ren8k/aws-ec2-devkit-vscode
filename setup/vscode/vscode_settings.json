@@ -13,6 +13,8 @@
       "source.organizeImports": true
     }
   },
+  // python interpreter (pytorch env in ec2-ml-ami)
+  "python.defaultInterpreterPath": "/opt/conda/envs/pytorch/bin/python",
   // formatter
   "isort.args": ["--profile", "black"],
   // linter

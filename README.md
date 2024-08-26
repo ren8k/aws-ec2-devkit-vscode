@@ -36,6 +36,8 @@
   - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
   - [チームでの EC2 の運用・管理](#チームでの-ec2-の運用管理)
   - [その他 Tips](#その他-tips)
+    - [VSCode Extension](#vscode-extension)
+    - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
 - [参考](#参考)
 
 ## 背景と課題
@@ -64,14 +66,32 @@ Windows，Linux 上には VSCode は install されているものとする．�
 
 ## 手順
 
-- [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
-- [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
-- [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
-- [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
-- [5. SSH の設定](#5-ssh-の設定)
-- [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
-- [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
-- [8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-images-を利用したコンテナの構築)
+- [背景と課題](#背景と課題)
+- [目的](#目的)
+- [解決方法](#解決方法)
+- [オリジナリティ](#オリジナリティ)
+- [前提](#前提)
+- [手順](#手順)
+- [手順の各ステップの詳細](#手順の各ステップの詳細)
+  - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
+  - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
+  - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
+  - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
+    - [構築するリソース](#構築するリソース)
+    - [EC2 の環境について](#ec2-の環境について)
+    - [cf テンプレートの簡易説明](#cf-テンプレートの簡易説明)
+  - [5. SSH の設定](#5-ssh-の設定)
+  - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
+  - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
+  - [8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-images-を利用したコンテナの構築)
+- [その他](#その他)
+  - [インスタンスの起動・停止](#インスタンスの起動停止)
+  - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
+  - [チームでの EC2 の運用・管理](#チームでの-ec2-の運用管理)
+  - [その他 Tips](#その他-tips)
+    - [VSCode Extension](#vscode-extension)
+    - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+- [参考](#参考)
 
 ## 手順の各ステップの詳細
 
@@ -102,7 +122,7 @@ ca_bundle = C:\path\to\zscalar_root_cacert.cer
 
 Zscaler を利用してプロキシエージェント経由で通信を行う場合，Zscaler では SSL インスペクションの設定がなされているため，https 通信を行うときにルート証明書の情報が Zscaler のものに上書きされる．そのため，Zscaler のルート証明書を実行環境の証明書の信頼リストに登録しなければ https 通信が失敗する場合がある．
 
-**Windowsの場合**
+**Windows の場合**
 
 公式ドキュメント[^3]を参考に，Zscaler のルート証明書をエクスポートする．
 
@@ -111,9 +131,9 @@ Zscaler を利用してプロキシエージェント経由で通信を行う場
   - 証明書のエクスポートウィザードで，次へ > Base 64 encoded X.509 を選択して次へ
   - 参照 > ディレクトリ・ファイル名を入力（ここではファイル名を`zscalar_root_cacert.cer`とする）> 次へ > 完了 > OK
 
-**macOSの場合**
+**macOS の場合**
 
-- Keychainを開き，システムチェーン -> システム の中にあるZscaler Root CA を右クリック
+- Keychain を開き，システムチェーン -> システム の中にある Zscaler Root CA を右クリック
 - 「"Zscaler Root CA"を書き出す...」 を選択
 - `/path/to/zscalar_root_cacert.cer`などのファイル名で，任意のパスに保存
 
