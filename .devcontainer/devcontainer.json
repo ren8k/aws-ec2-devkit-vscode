@@ -87,7 +87,8 @@
 				"MS-CEINTL.vscode-language-pack-ja",
 				// other
 				"github.copilot",
-				"github.copilot-chat"
+				"github.copilot-chat",
+				"amazonwebservices.aws-toolkit-vscode"
 			]
 		}
 	}
