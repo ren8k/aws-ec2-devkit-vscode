@@ -1,10 +1,11 @@
 #!/bin/bash
-NAME="username"
-MAIL="username@example.com"
+# prompt for name and email
+read -p "Enter your name: " NAME
+read -p "Enter your email: " MAIL
 
 # git
-git config --global user.name $NAME
-git config --global user.email $MAIL
+git config --global user.name "$NAME"
+git config --global user.email "$MAIL"
 git config --global core.editor vim
 
 # codecommit credential
