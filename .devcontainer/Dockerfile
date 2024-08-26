@@ -1,5 +1,5 @@
-FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.1.0-gpu-py310-cu121-ubuntu20.04-sagemaker
-# FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.1.0-cpu-py310-ubuntu20.04-sagemaker # for cpu
+FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.3.0-gpu-py311-cu121-ubuntu20.04-sagemaker
+# FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.3.0-cpu-py311-ubuntu20.04-sagemaker # for cpu
 # see: https://github.com/aws/deep-learning-containers/blob/master/available_images.md
 
 WORKDIR /app
