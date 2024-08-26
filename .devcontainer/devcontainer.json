@@ -32,6 +32,7 @@
 						"source.organizeImports": true
 					}
 				},
+				"python.defaultInterpreterPath": "/opt/conda/bin/python",
 				"isort.args": [
 					"--profile",
 					"black"
