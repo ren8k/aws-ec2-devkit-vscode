@@ -208,9 +208,10 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 - [CloudFormation コンソール](https://console.aws.amazon.com/cloudformation/)を開き，スタックの作成を押下
 - テンプレートの指定 > テンプレートファイルのアップロード > ファイルの選択で上記で作成した yaml ファイルを指定し，次へを押下
   - [`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)を upload する
+  - 任意の事情で upload が出来ない場合，テンプレートを S3 経由で利用するか，Application Composer を利用してテンプレートを利用すると良い
 - 任意のスタック名（利用者名などでよい）を入力後，以下のパラメータを設定・変更する
   - EC2InstanceType: インスタンスタイプ．デフォルトは g4dn.xlarge
-  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch 2.1.0 の ID
+  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch の ID
   - SubnetID: 利用するパブリックサブネットの ID（デフォルト VPC のパブリックサブネット ID 等で問題ない）
   - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
   - VolumeSize: ボリュームサイズ．デフォルトは 100GB
