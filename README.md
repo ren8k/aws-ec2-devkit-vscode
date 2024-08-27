@@ -38,6 +38,7 @@
   - [その他 Tips](#その他-tips)
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+    - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
 - [参考](#参考)
 
 ## 背景と課題
@@ -91,6 +92,7 @@ Windows，Linux 上には VSCode は install されているものとする．�
   - [その他 Tips](#その他-tips)
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+    - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
 - [参考](#参考)
 
 ## 手順の各ステップの詳細
@@ -356,6 +358,11 @@ torch.cuda.is_available(): True
 - `.devcontainer/devcontainer.json`の 12 行目と 13 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
+
+#### CloudFormation Template の UserData の実行ログ
+
+- EC2 インスタンスの以下のパスにログが出力される
+  - `/var/log/cloud-init-output.log`
 
 ## 参考
 
