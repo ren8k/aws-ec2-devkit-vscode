@@ -272,7 +272,7 @@ torch.cuda.is_available(): True
 
 ### 7. EC2 インスタンスに VSCode extension をインストール
 
-[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード中の`NAME`と`MAIL`には，各自の名前とメールアドレスを記述すること．
+[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード実行時，Git の設定で利用する名前とメールアドレスをコマンドから入力すること．
 
 ### 8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築
 
