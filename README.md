@@ -38,6 +38,7 @@
   - [その他 Tips](#その他-tips)
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+    - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
 - [参考](#参考)
 
 ## 背景と課題
@@ -91,6 +92,7 @@ Windows，Linux 上には VSCode は install されているものとする．�
   - [その他 Tips](#その他-tips)
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+    - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
 - [参考](#参考)
 
 ## 手順の各ステップの詳細
@@ -206,9 +208,10 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 - [CloudFormation コンソール](https://console.aws.amazon.com/cloudformation/)を開き，スタックの作成を押下
 - テンプレートの指定 > テンプレートファイルのアップロード > ファイルの選択で上記で作成した yaml ファイルを指定し，次へを押下
   - [`./setup/cf-template/cf-ec2.yaml`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/cf-template/cf-ec2.yaml)を upload する
+  - 任意の事情で upload が出来ない場合，テンプレートを S3 経由で利用するか，Application Composer を利用してテンプレートを利用すると良い
 - 任意のスタック名（利用者名などでよい）を入力後，以下のパラメータを設定・変更する
   - EC2InstanceType: インスタンスタイプ．デフォルトは g4dn.xlarge
-  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch 2.1.0 の ID
+  - ImageId: AMI の ID．デフォルトは Deep Learning AMI GPU PyTorch の ID
   - SubnetID: 利用するパブリックサブネットの ID（デフォルト VPC のパブリックサブネット ID 等で問題ない）
   - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
   - VolumeSize: ボリュームサイズ．デフォルトは 100GB
@@ -270,7 +273,7 @@ torch.cuda.is_available(): True
 
 ### 7. EC2 インスタンスに VSCode extension をインストール
 
-[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード中の`NAME`と`MAIL`には，各自の名前とメールアドレスを記述すること．
+[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード実行時，Git の設定で利用する名前とメールアドレスをコマンドから入力すること．
 
 ### 8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築
 
@@ -356,6 +359,11 @@ torch.cuda.is_available(): True
 - `.devcontainer/devcontainer.json`の 12 行目と 13 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
+
+#### CloudFormation Template の UserData の実行ログ
+
+- EC2 インスタンスの以下のパスにログが出力される
+  - `/var/log/cloud-init-output.log`
 
 ## 参考
 
