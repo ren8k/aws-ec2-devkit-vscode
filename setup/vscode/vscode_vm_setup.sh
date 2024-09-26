@@ -34,6 +34,7 @@ code --install-extension donjayamanne.git-extension-pack
 ## markdown
 code --install-extension yzhang.markdown-all-in-one
 code --install-extension shd101wyy.markdown-preview-enhanced
+code --install-extension esbenp.prettier-vscode
 ## shell
 code --install-extension mads-hartmann.bash-ide-vscode
 code --install-extension timonwong.shellcheck
