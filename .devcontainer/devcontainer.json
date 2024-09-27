@@ -53,6 +53,7 @@
 				// markdown
 				"[markdown]": {
 					"editor.wordWrap": "bounded",
+					"editor.defaultFormatter": "esbenp.prettier-vscode",
 				},
 			},
 			"extensions": [
@@ -75,6 +76,7 @@
 				// markdown
 				"yzhang.markdown-all-in-one",
 				"shd101wyy.markdown-preview-enhanced",
+				"esbenp.prettier-vscode",
 				// shell
 				"mads-hartmann.bash-ide-vscode",
 				"timonwong.shellcheck",
