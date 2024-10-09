@@ -77,13 +77,15 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      AvailabilityZone: ap-northeast-1a
       ImageId: !Ref ImageId
       InstanceType: !Ref EC2InstanceType
       KeyName: !Ref NewKeyPair
-      SecurityGroupIds:
-        - !GetAtt EC2SecurityGroup.GroupId
-      SubnetId: !Ref SubnetId
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId: !Ref SubnetId
+          GroupSet:
+            - !GetAtt EC2SecurityGroup.GroupId
       IamInstanceProfile: !Ref EC2InstanceProfile
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
