@@ -1,0 +1,99 @@
+{
+	"name": "uv-pj", // set your pj name
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"workspaceFolder": "/app/uv-pj",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/app/uv-pj,type=bind,consistency=cached", // set your pj name as suffix in target
+	"mounts": [
+    	"source=uv-cache,target=/root/.cache/uv,type=volume"
+	],
+	"remoteEnv": {
+        "UV_COMPILE_BYTECODE": "1",
+		"UV_LINK_MODE": "copy"
+    },
+	"postCreateCommand": "uv sync --frozen && . .venv/bin/activate",
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				},
+				// python
+				"[python]": {
+					"editor.defaultFormatter": "ms-python.black-formatter",
+					"editor.formatOnSave": true,
+					"editor.codeActionsOnSave": {
+						"source.organizeImports": true
+					}
+				},
+				"python.defaultInterpreterPath": "./.venv/bin/python",
+				"isort.args": [
+					"--profile",
+					"black"
+				],
+				"flake8.args": [
+					"--max-line-length=88",
+					"--ignore=E203,W503,W504"
+				],
+				"mypy-type-checker.args": [
+					"--ignore-missing-imports",
+					"--disallow-untyped-defs"
+				],
+				"python.analysis.inlayHints.functionReturnTypes": true,
+				"python.analysis.inlayHints.variableTypes": true,
+				// visibility
+				"editor.bracketPairColorization.enabled": true,
+				"editor.guides.bracketPairs": "active",
+				// markdown
+				"[markdown]": {
+					"editor.wordWrap": "bounded",
+					"editor.defaultFormatter": "esbenp.prettier-vscode",
+				},
+			},
+			"extensions": [
+				// python
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.black-formatter",
+				"ms-python.flake8",
+				"ms-python.isort",
+				"ms-python.mypy-type-checker",
+				"donjayamanne.python-extension-pack",
+				// jupyter
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-keymap",
+				"ms-toolsai.jupyter-renderers",
+				// git
+				"mhutchie.git-graph",
+				"eamodio.gitlens",
+				"donjayamanne.git-extension-pack",
+				// markdown
+				"yzhang.markdown-all-in-one",
+				"shd101wyy.markdown-preview-enhanced",
+				"esbenp.prettier-vscode",
+				// shell
+				"mads-hartmann.bash-ide-vscode",
+				"timonwong.shellcheck",
+				"foxundermoon.shell-format",
+				// visibility
+				"mechatroner.rainbow-csv",
+				"GrapeCity.gc-excelviewer",
+				"janisdd.vscode-edit-csv",
+				"monokai.theme-monokai-pro-vscode",
+				"vscode-icons-team.vscode-icons",
+				"MS-CEINTL.vscode-language-pack-ja",
+				// other
+				"github.copilot",
+				"github.copilot-chat",
+				"amazonwebservices.aws-toolkit-vscode",
+				"amazonwebservices.amazon-q-vscode",
+				"saoudrizwan.claude-dev"
+			]
+		}
+	}
+}
