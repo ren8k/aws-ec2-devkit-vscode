@@ -5,7 +5,7 @@
 	},
 	"workspaceFolder": "/workspace",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
+	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/gpu/init.sh",
 	"runArgs": [
 		"--name",
 		"gpu-pj-name",	// set your pj name
