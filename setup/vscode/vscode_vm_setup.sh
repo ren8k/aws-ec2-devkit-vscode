@@ -50,6 +50,8 @@ code --install-extension MS-CEINTL.vscode-language-pack-ja
 code --install-extension github.copilot
 code --install-extension github.copilot-chat
 code --install-extension amazonwebservices.aws-toolkit-vscode
+code --install-extension amazonwebservices.amazon-q-vscode
+code --install-extension saoudrizwan.claude-dev
 
 # vscode settings
 cp vscode_settings.json ~/.vscode-server/data/Machine/settings.json
