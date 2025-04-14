@@ -345,6 +345,7 @@ torch.cuda.is_available(): True
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
     - Dev Containers の`remoteUser` property を，[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)に追記しても良い．詳細は，VSCode の公式ドキュメント[^5]を参照されたい．
+    - non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` で設定することも可能である．詳細や使用例は，公式実装[^6]や記事[^7]を参照されたい．
 - EC2 インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
   - `ec2-farm`を開き，右クリックで EC2 を起動 or 停止が可能
 - リモートの Dev Container 環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
@@ -372,3 +373,5 @@ torch.cuda.is_available(): True
 [^3]: [CA 証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
 [^4]: [Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
 [^5]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
+[^6]: [devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
+[^7]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
