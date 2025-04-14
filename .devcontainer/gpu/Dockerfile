@@ -2,7 +2,6 @@ FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.3.0-gp
 # FROM 763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/pytorch-training:2.3.0-cpu-py311-ubuntu20.04-sagemaker
 # see: https://github.com/aws/deep-learning-containers/blob/master/available_images.md
 
-WORKDIR /app
 COPY ./requirements.txt /tmp/
 
 # Install libraries
