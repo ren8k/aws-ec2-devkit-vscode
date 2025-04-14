@@ -16,10 +16,8 @@ git config --global credential.UseHttpPath true
 ## python
 code --install-extension ms-python.python
 code --install-extension ms-python.vscode-pylance
-code --install-extension ms-python.black-formatter
-code --install-extension ms-python.flake8
-code --install-extension ms-python.isort
 code --install-extension ms-python.mypy-type-checker
+code --install-extension charliermarsh.ruff
 code --install-extension donjayamanne.python-extension-pack
 ## docker
 code --install-extension ms-azuretools.vscode-docker

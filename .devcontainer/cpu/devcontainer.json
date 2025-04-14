@@ -23,27 +23,27 @@
 						"path": "/bin/bash"
 					}
 				},
+				// notebook
+				"notebook.formatOnSave.enabled": true,
+				"notebook.codeActionsOnSave": {
+					"notebook.source.fixAll": "explicit",
+					"notebook.source.organizeImports": "explicit"
+				},
 				// python
 				"[python]": {
-					"editor.defaultFormatter": "ms-python.black-formatter",
 					"editor.formatOnSave": true,
+					"editor.defaultFormatter": "charliermarsh.ruff",
 					"editor.codeActionsOnSave": {
-						"source.organizeImports": true
+						"source.fixAll": "explicit", // fix lint violations on-save
+						"source.organizeImports": "explicit" // organize imports on-save
 					}
 				},
-				"python.defaultInterpreterPath": "./.venv/bin/python",
-				"isort.args": [
-					"--profile",
-					"black"
-				],
-				"flake8.args": [
-					"--max-line-length=88",
-					"--ignore=E203,W503,W504"
-				],
 				"mypy-type-checker.args": [
 					"--ignore-missing-imports",
 					"--disallow-untyped-defs"
 				],
+				"python.defaultInterpreterPath": "./.venv/bin/python",
+				"python.analysis.typeCheckingMode": "basic",
 				"python.analysis.inlayHints.functionReturnTypes": true,
 				"python.analysis.inlayHints.variableTypes": true,
 				// visibility
@@ -59,10 +59,8 @@
 				// python
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"ms-python.black-formatter",
-				"ms-python.flake8",
-				"ms-python.isort",
 				"ms-python.mypy-type-checker",
+				"charliermarsh.ruff",
 				"donjayamanne.python-extension-pack",
 				// jupyter
 				"ms-toolsai.jupyter",
