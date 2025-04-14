@@ -26,3 +26,5 @@ USER $USERNAME
 # Set working directory
 WORKDIR /home/$USERNAME/
 
+# add ll alias
+RUN echo 'alias ll="ls -la"' >> ~/.bash_aliases
