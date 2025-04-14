@@ -1,14 +1,14 @@
 {
-	"name": "pj-name", // set your pj name
+	"name": "gpu-pj-name", // set your pj name
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"workspaceFolder": "/app/pj-name", // set your pj name as suffix
-	"workspaceMount": "source=${localWorkspaceFolder},target=/app/pj-name,type=bind,consistency=cached", // set your pj name as suffix in target
+	"workspaceFolder": "/workspace",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
 	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/init.sh",
 	"runArgs": [
 		"--name",
-		"pj-name",	// set your pj name
+		"gpu-pj-name",	// set your pj name
 		"--gpus",
 		"all",
 		"--shm-size",
