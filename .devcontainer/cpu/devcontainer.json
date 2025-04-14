@@ -1,17 +1,17 @@
 {
-	"name": "uv-pj", // set your pj name
+	"name": "cpu-uv-env", // set your pj name
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"workspaceFolder": "/app/uv-pj",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/app/uv-pj,type=bind,consistency=cached", // set your pj name as suffix in target
+	"workspaceFolder": "/workspace",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
 	"mounts": [
-    	"source=uv-cache,target=/root/.cache/uv,type=volume"
+		"source=uv-cache,target=/root/.cache/uv,type=volume"
 	],
 	"remoteEnv": {
-        "UV_COMPILE_BYTECODE": "1",
+		"UV_COMPILE_BYTECODE": "1",
 		"UV_LINK_MODE": "copy"
-    },
+	},
 	"postCreateCommand": "uv sync --frozen && . .venv/bin/activate",
 	// Configure tool-specific properties.
 	"customizations": {
