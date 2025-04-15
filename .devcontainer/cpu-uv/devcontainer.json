@@ -1,5 +1,5 @@
 {
-	"name": "cpu-uv-env", // set your pj name
+	"name": "cpu-uv", // set your pj name
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
