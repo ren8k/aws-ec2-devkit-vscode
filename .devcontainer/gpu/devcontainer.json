@@ -1,14 +1,14 @@
 {
-	"name": "gpu-pj-name", // set your pj name
+	"name": "gpu-sagemaker", // set your pj name
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
 	"workspaceFolder": "/workspace",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/gpu/init.sh",
+	"initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/gpu-sagemaker/init.sh",
 	"runArgs": [
 		"--name",
-		"gpu-pj-name",	// set your pj name
+		"gpu-sagemaker",	// set your pj name
 		"--gpus",
 		"all",
 		"--shm-size",
