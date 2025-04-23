@@ -6,7 +6,8 @@
 	"workspaceFolder": "/workspace",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
 	"mounts": [
-		"source=uv-cache,target=/root/.cache/uv,type=volume"
+		"source=uv-cache,target=/root/.cache/uv,type=volume", // uv cache
+		"source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached" // git config
 	],
 	"remoteEnv": {
 		"UV_COMPILE_BYTECODE": "1",
