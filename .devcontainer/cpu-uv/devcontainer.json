@@ -1,94 +1,94 @@
 {
-	"name": "cpu-uv", // set your pj name
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"workspaceFolder": "/workspace",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-	"mounts": [
-		"source=uv-cache,target=/root/.cache/uv,type=volume", // uv cache
-		"source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached" // git config
-	],
-	"remoteEnv": {
-		"UV_COMPILE_BYTECODE": "1",
-		"UV_LINK_MODE": "copy"
-	},
-	"postCreateCommand": "uv sync --frozen && . .venv/bin/activate",
-	// Configure tool-specific properties.
-	"customizations": {
-		// Configure properties specific to VS Code.
-		"vscode": {
-			"settings": {
-				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/bin/bash"
-					}
-				},
-				// notebook
-				"notebook.formatOnSave.enabled": true,
-				"notebook.codeActionsOnSave": {
-					"notebook.source.fixAll": "explicit",
-					"notebook.source.organizeImports": "explicit"
-				},
-				// python
-				"[python]": {
-					"editor.formatOnSave": true,
-					"editor.defaultFormatter": "charliermarsh.ruff",
-					"editor.codeActionsOnSave": {
-						"source.fixAll": "explicit", // fix lint violations on-save
-						"source.organizeImports": "explicit" // organize imports on-save
-					}
-				},
-				"python.defaultInterpreterPath": "./.venv/bin/python",
-				"python.analysis.typeCheckingMode": "basic",
-				"python.analysis.inlayHints.functionReturnTypes": true,
-				"python.analysis.inlayHints.variableTypes": true,
-				// visibility
-				"editor.bracketPairColorization.enabled": true,
-				"editor.guides.bracketPairs": "active",
-				// markdown
-				"[markdown]": {
-					"editor.wordWrap": "bounded",
-					"editor.defaultFormatter": "esbenp.prettier-vscode",
-				},
-			},
-			"extensions": [
-				// python
-				"ms-python.python",
-				"ms-python.vscode-pylance",
-				"ms-python.mypy-type-checker",
-				"charliermarsh.ruff",
-				"donjayamanne.python-extension-pack",
-				// jupyter
-				"ms-toolsai.jupyter",
-				"ms-toolsai.jupyter-keymap",
-				"ms-toolsai.jupyter-renderers",
-				// git
-				"mhutchie.git-graph",
-				"eamodio.gitlens",
-				"donjayamanne.git-extension-pack",
-				// markdown
-				"yzhang.markdown-all-in-one",
-				"shd101wyy.markdown-preview-enhanced",
-				"esbenp.prettier-vscode",
-				// shell
-				"mads-hartmann.bash-ide-vscode",
-				"timonwong.shellcheck",
-				"foxundermoon.shell-format",
-				// visibility
-				"mechatroner.rainbow-csv",
-				"GrapeCity.gc-excelviewer",
-				"janisdd.vscode-edit-csv",
-				"monokai.theme-monokai-pro-vscode",
-				"vscode-icons-team.vscode-icons",
-				"MS-CEINTL.vscode-language-pack-ja",
-				// other
-				"github.copilot",
-				"github.copilot-chat",
-				"amazonwebservices.aws-toolkit-vscode",
-				"amazonwebservices.amazon-q-vscode",
-				"saoudrizwan.claude-dev"
-			]
-		}
-	}
+  "name": "cpu-uv", // set your pj name
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "mounts": [
+    "source=uv-cache,target=/root/.cache/uv,type=volume", // uv cache
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached" // git config
+  ],
+  "remoteEnv": {
+    "UV_COMPILE_BYTECODE": "1",
+    "UV_LINK_MODE": "copy"
+  },
+  "postCreateCommand": "uv sync --frozen && . .venv/bin/activate",
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        // notebook
+        "notebook.formatOnSave.enabled": true,
+        "notebook.codeActionsOnSave": {
+          "notebook.source.fixAll": "explicit",
+          "notebook.source.organizeImports": "explicit"
+        },
+        // python
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit", // fix lint violations on-save
+            "source.organizeImports": "explicit" // organize imports on-save
+          }
+        },
+        "python.defaultInterpreterPath": "./.venv/bin/python",
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.inlayHints.functionReturnTypes": true,
+        "python.analysis.inlayHints.variableTypes": true,
+        // visibility
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+        // markdown
+        "[markdown]": {
+          "editor.wordWrap": "bounded",
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+        },
+      },
+      "extensions": [
+        // python
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "donjayamanne.python-extension-pack",
+        // jupyter
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-keymap",
+        "ms-toolsai.jupyter-renderers",
+        // git
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "donjayamanne.git-extension-pack",
+        // markdown
+        "yzhang.markdown-all-in-one",
+        "shd101wyy.markdown-preview-enhanced",
+        "esbenp.prettier-vscode",
+        // shell
+        "mads-hartmann.bash-ide-vscode",
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+        // visibility
+        "mechatroner.rainbow-csv",
+        "GrapeCity.gc-excelviewer",
+        "janisdd.vscode-edit-csv",
+        "monokai.theme-monokai-pro-vscode",
+        "vscode-icons-team.vscode-icons",
+        "MS-CEINTL.vscode-language-pack-ja",
+        // other
+        "github.copilot",
+        "github.copilot-chat",
+        "amazonwebservices.aws-toolkit-vscode",
+        "amazonwebservices.amazon-q-vscode",
+        "saoudrizwan.claude-dev"
+      ]
+    }
+  }
 }
