@@ -46,6 +46,7 @@
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.inlayHints.functionReturnTypes": true,
         "python.analysis.inlayHints.variableTypes": true,
+        "python.analysis.completeFunctionParens": true,
         // visibility
         "editor.bracketPairColorization.enabled": true,
         "editor.guides.bracketPairs": "active",
@@ -86,7 +87,6 @@
         "vscode-icons-team.vscode-icons",
         "MS-CEINTL.vscode-language-pack-ja",
         // other
-        "ms-azuretools.vscode-docker",
         "github.copilot",
         "github.copilot-chat",
         "amazonwebservices.aws-toolkit-vscode",
