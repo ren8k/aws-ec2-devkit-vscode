@@ -39,6 +39,9 @@
             "source.organizeImports": "explicit" // organize imports on-save
           }
         },
+        "mypy-type-checker.args": [
+          "--config=${workspaceFolder}/pyproject.toml"
+        ],
         "python.defaultInterpreterPath": "./.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.inlayHints.functionReturnTypes": true,
@@ -49,8 +52,8 @@
         // markdown
         "[markdown]": {
           "editor.wordWrap": "bounded",
-          "editor.defaultFormatter": "esbenp.prettier-vscode",
-        },
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
       },
       "extensions": [
         // python
