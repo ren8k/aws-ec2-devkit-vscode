@@ -86,6 +86,7 @@
         "vscode-icons-team.vscode-icons",
         "MS-CEINTL.vscode-language-pack-ja",
         // other
+        "ms-azuretools.vscode-docker",
         "github.copilot",
         "github.copilot-chat",
         "amazonwebservices.aws-toolkit-vscode",
