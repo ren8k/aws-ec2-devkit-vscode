@@ -8,7 +8,7 @@ COPY ./requirements.txt /tmp/
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # Uninstall awscli v1 and install awscli v2
-RUN /opt/conda/bin/mamba uninstall -y awscli \
+RUN pip uninstall awscli -y \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
