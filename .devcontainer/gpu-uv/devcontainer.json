@@ -9,6 +9,12 @@
     "source=uv-cache,target=/root/.cache/uv,type=volume", // uv cache
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached" // git config
   ],
+  "runArgs": [
+    "--gpus",
+    "all",
+    "--shm-size",
+    "32g" // shared memory size
+  ],
   "remoteEnv": {
     "UV_COMPILE_BYTECODE": "1",
     "UV_LINK_MODE": "copy"
@@ -40,13 +46,13 @@
           }
         },
         "mypy-type-checker.args": [
-          "--ignore-missing-imports",
-          "--disallow-untyped-defs"
+          "--config=${workspaceFolder}/pyproject.toml"
         ],
-        "python.defaultInterpreterPath": "./.venv/bin/python",
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.inlayHints.functionReturnTypes": true,
         "python.analysis.inlayHints.variableTypes": true,
+        "python.analysis.completeFunctionParens": true,
         // visibility
         "editor.bracketPairColorization.enabled": true,
         "editor.guides.bracketPairs": "active",
