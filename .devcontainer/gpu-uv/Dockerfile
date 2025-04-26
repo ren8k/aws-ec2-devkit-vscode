@@ -1,4 +1,7 @@
-FROM ghcr.io/astral-sh/uv:debian
+FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
+
+# Install uv by copying the binary from the official distroless Docker image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Install awscli v2
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
@@ -27,4 +30,4 @@ USER $USERNAME
 WORKDIR /home/$USERNAME/
 
 # add ll alias
-RUN echo 'alias ll="ls -la"' >> ~/.bash_aliases
+# RUN echo 'alias ll="ls -la"' >> ~/.bash_aliases
