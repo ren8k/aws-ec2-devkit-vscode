@@ -117,6 +117,8 @@ Resources:
         sudo ./aws/install --bin-dir /opt/pytorch/bin --install-dir /usr/local/aws-cli --update
         sudo rm aws/ -r
         sudo rm awscliv2.zip
+
+        # uvのinstall
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2
