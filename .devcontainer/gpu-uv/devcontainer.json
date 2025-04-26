@@ -48,7 +48,7 @@
         "mypy-type-checker.args": [
           "--config=${workspaceFolder}/pyproject.toml"
         ],
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "./.venv/bin/python",
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.inlayHints.functionReturnTypes": true,
         "python.analysis.inlayHints.variableTypes": true,
