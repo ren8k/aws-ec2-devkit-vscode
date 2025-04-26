@@ -107,18 +107,11 @@ Resources:
         git config --global credential.helper '!aws codecommit credential-helper $@'
         git config --global credential.UseHttpPath true
 
-        echo uninstall awscli v1
-        pip uninstall awscli -y
-        hash -d aws # delete aws command cache
+        echo install uv
+        curl -LsSf https://astral.sh/uv/install.sh | sh
 
-        echo install awscli v2
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /opt/pytorch/bin --install-dir /usr/local/aws-cli --update
-        sudo rm aws/ -r
-        sudo rm awscliv2.zip
-
-        # uvのinstall
+        echo activate pytorch venv
+        source /opt/pytorch/bin/activate
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2
