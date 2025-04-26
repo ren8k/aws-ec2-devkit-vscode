@@ -4,7 +4,7 @@ Parameters:
   ImageId:
     Description: Amazon Machine Image (AMI)
     Type: String
-    Default: ami-09829527b1a93f365
+    Default: ami-09c1f9fce82b9f2af
   EC2InstanceType:
     Description: EC2 instance type on which IDE runs
     Type: String
@@ -108,20 +108,15 @@ Resources:
         git config --global credential.UseHttpPath true
 
         echo uninstall awscli v1
-        sudo rm -rf /usr/local/aws
-        sudo rm /usr/local/bin/aws
-        sudo rm -r ~/.aws/
+        pip uninstall awscli -y
+        hash -d aws # delete aws command cache
 
         echo install awscli v2
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+        sudo ./aws/install --bin-dir /opt/pytorch/bin --install-dir /usr/local/aws-cli --update
         sudo rm aws/ -r
         sudo rm awscliv2.zip
-
-        echo init conda
-        conda init bash
-        sudo reboot
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2
