@@ -24,23 +24,29 @@
             "path": "/bin/bash"
           }
         },
+        // notebook
+        "notebook.formatOnSave.enabled": true,
+        "notebook.codeActionsOnSave": {
+          "notebook.source.fixAll": "explicit",
+          "notebook.source.organizeImports": "explicit"
+        },
         // python
         "[python]": {
-          "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true,
+          "editor.defaultFormatter": "charliermarsh.ruff",
           "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.fixAll": "explicit", // fix lint violations on-save
+            "source.organizeImports": "explicit" // organize imports on-save
           }
         },
-        "python.defaultInterpreterPath": "/opt/conda/bin/python",
-        "isort.args": ["--profile", "black"],
-        "flake8.args": ["--max-line-length=88", "--ignore=E203,W503,W504"],
         "mypy-type-checker.args": [
-          "--ignore-missing-imports",
-          "--disallow-untyped-defs"
+          "--config=${workspaceFolder}/pyproject.toml"
         ],
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.analysis.typeCheckingMode": "basic",
         "python.analysis.inlayHints.functionReturnTypes": true,
         "python.analysis.inlayHints.variableTypes": true,
+        "python.analysis.completeFunctionParens": true,
         // visibility
         "editor.bracketPairColorization.enabled": true,
         "editor.guides.bracketPairs": "active",
@@ -54,10 +60,8 @@
         // python
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
-        "ms-python.flake8",
-        "ms-python.isort",
         "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
         "donjayamanne.python-extension-pack",
         // jupyter
         "ms-toolsai.jupyter",
@@ -85,7 +89,9 @@
         // other
         "github.copilot",
         "github.copilot-chat",
-        "amazonwebservices.aws-toolkit-vscode"
+        "amazonwebservices.aws-toolkit-vscode",
+        "amazonwebservices.amazon-q-vscode",
+        "saoudrizwan.claude-dev"
       ]
     }
   }
