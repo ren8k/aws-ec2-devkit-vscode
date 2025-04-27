@@ -18,12 +18,12 @@
       "installOhMyZsh": false,
       "installOhMyZshConfig": false,
       "upgradePackages": false,
-      "username": "vscode",
+      "username": "vscode", // Add non-root user
       "userUid": "automatic",
       "userGid": "automatic"
     }
   },
-  "remoteUser": "vscode",
+  "remoteUser": "vscode", // use non-root user
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
