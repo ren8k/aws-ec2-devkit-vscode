@@ -7,13 +7,23 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
   "initializeCommand": "bash ${localWorkspaceFolder}/.devcontainer/gpu-sagemaker/init.sh",
   "runArgs": [
-    "--name",
-    "gpu-sagemaker", // set your pj name
     "--gpus",
     "all",
     "--shm-size",
     "32g" // shared memory size
   ],
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "installOhMyZsh": false,
+      "installOhMyZshConfig": false,
+      "upgradePackages": false,
+      "username": "vscode",
+      "userUid": "automatic",
+      "userGid": "automatic"
+    }
+  },
+  "remoteUser": "vscode",
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
