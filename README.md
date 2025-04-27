@@ -1,14 +1,14 @@
 # VSCode Dev Containers を利用した AWS EC2 上での開発環境構築手順<!-- omit in toc -->
 
-本リポジトリでは，Windows・Linux PC 上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習や LLM ソフトウェア開発を効率良く行えるようにするための手順を示す．
+本リポジトリでは，Windows・Mac・Linux PC 上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習や LLM アプリケーション開発を効率良く行えるようにするための手順を示す．
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
 
 ## TL;DR <!-- omit in toc -->
 
 以下の Tips を整理し，手順書としてまとめた．また，最小限の手順で済むよう，bat ファイルや shell スクリプトを用意している．
 
-- SSM 経由で VSCode から EC2 にセキュアに SSH 接続する方法
-- チーム開発時の IDE として VSCode を利用し，Flake8，Black，Mypy を共通的に利用する方法
+- AWS Systems Manager (SSM) 経由で VSCode から EC2 にセキュアに SSH 接続する方法
+- チーム開発時の IDE として VSCode を利用し，uv，Ruff，mypy を共通的に利用する方法
 - AWS Deep Learning Containers Images をベースに Dev Containers 上で開発するための方法
 
 ## 目次<!-- omit in toc -->
@@ -39,13 +39,18 @@
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
     - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
+    - [Ruff が動作しない場合](#ruff-が動作しない場合)
 - [参考](#参考)
 
 ## 背景と課題
 
-AWS 上で開発する際，社内プロキシ等が原因で VSCode から容易に Remote SSH できず，開発 IDE として VSCode を利用できない事例を多数見てきた．これにより，チーム開発時に，各メンバが異なる IDE（異なる Linter, Formatter）を利用する結果，チームとしての開発効率が低下してしまう．
+社内のローカル PC 上で，深層学習モデルを開発する際，PoC 毎に環境構築が必要で時間を要してしまう課題がある．例えば，NVIDIA drivers や CUDA，PyTorch などのセットアップに苦労し，本来注力すべき本質的な開発タスクに十分なリソースを割くことができない．
 
-一方，AWS Cloud9 のようなクラウドネイティブ IDE を利用してチーム開発を行うことで，開発 IDE を統一することは可能である．しかし，Cloud9 ベースの開発の場合，Linter の設定を自由に行えないため，コード内のバグ原因などの見落としが発生し，結果的に開発効率が悪くなる．加えて，Git コマンド，Docker コマンド，Linux 基盤の深い知見を求められるため，新規参画者には敷居が高く，即時参画には時間を要してしまう問題がある．(cloud9 ではデフォルトで pylint (formatter)を利用できるが，その設定などは煩雑で，手動で開発者が各々行う必要がある．)
+また，LLM API を利用したアプリケーションをチームで開発する際，社内プロキシが原因で開発が非効率になる課題がある．具体的には，SSL 証明書関連のエラーに苦労することや，リモートリポジトリを利用できないため，コードのバージョン管理や共有が困難になる課題がある．
+
+その他，チームの各メンバが利用する開発環境や IDE が異なる場合，チームとしての開発効率が低下してしまう課題がある．特に，利用する OS や Linter，Formatter が異なる場合，コードの一貫性が失われ，レビュープロセスが複雑化する．
+
+AWS Cloud9 や SageMaker AI Studio Code Editor のようなクラウドネイティブ IDE を利用することで，上記の課題を解消することは可能である．しかし，これらのサービスを利用する場合，Dev Containers などの VSCode の Extensions を利用することはできない．そのため，Docker を利用する場合 CLI ベースで利用する必要があり，初学者や新規参画者には敷居が高く，即時参画には時間を要してしまう課題がある．
 
 ## 目的
 
@@ -67,33 +72,14 @@ Windows，Linux 上には VSCode は install されているものとする．�
 
 ## 手順
 
-- [背景と課題](#背景と課題)
-- [目的](#目的)
-- [解決方法](#解決方法)
-- [オリジナリティ](#オリジナリティ)
-- [前提](#前提)
-- [手順](#手順)
-- [手順の各ステップの詳細](#手順の各ステップの詳細)
-  - [1. AWS CLI のインストールとセットアップ](#1-aws-cli-のインストールとセットアップ)
-  - [2. SSM Session Manager plugin のインストール](#2-ssm-session-manager-plugin-のインストール)
-  - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
-  - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
-    - [構築するリソース](#構築するリソース)
-    - [EC2 の環境について](#ec2-の環境について)
-    - [cf テンプレートの簡易説明](#cf-テンプレートの簡易説明)
-  - [5. SSH の設定](#5-ssh-の設定)
-  - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
-  - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
-  - [8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築](#8-dev-containers-と-aws-deep-learning-containers-images-を利用したコンテナの構築)
-- [その他](#その他)
-  - [インスタンスの起動・停止](#インスタンスの起動停止)
-  - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
-  - [チームでの EC2 の運用・管理](#チームでの-ec2-の運用管理)
-  - [その他 Tips](#その他-tips)
-    - [VSCode Extension](#vscode-extension)
-    - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
-    - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
-- [参考](#参考)
+1. AWS CLI のインストールとセットアップ
+2. SSM Session Manager plugin のインストール
+3. ローカルの VSCode に extension をインストール
+4. CloudFormation で EC2 を構築
+5. SSH の設定
+6. VSCode から EC2 インスタンスにログイン
+7. EC2 インスタンスに VSCode extension をインストール
+8. Dev Containers と AWS Deep Learning Containers Images を利用したコンテナの構築
 
 ## 手順の各ステップの詳細
 
@@ -191,13 +177,12 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
   - SecretsManagerReadWrite
   - AWSLambda_FullAccess
   - AmazonBedrockFullAccess
+  - AmazonECS_FullAccess
 - セキュリティグループも自動作成しており，インバウンドは全てシャットアウトしている
 - SSH 接続で利用する Key Pair を作成している
 - EC2 インスタンス作成時，以下を自動実行している
   - git のアップグレード
-  - aws cli のアップグレード
-  - conda の初期設定
-  - 再起動
+  - UV のインストール
 - CloudFormation の出力部には，インスタンス ID と Key ID を出力している
   - 後述の shell で利用する
 
@@ -232,7 +217,7 @@ VSCode のリモート接続機能を利用して，SSM Session Manager Plugin �
 - VSCode 上で，`F1`を押下し，`Remote-SSH: Connect to Host...`を選択
 - `~/.ssh/config`に記述したホスト名を選択（デフォルトでは`ec2`となっている）
 - リモート側の初期設定が終わるまで 30 秒程度待つ．（Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること）
-  - ※スタックの作成が完了しても，cf テンプレート内の UserData の shell 実行が終わるまで待つ必要があるため注意．（最長 5 分~10 分程度待つ．UserData の実行ログは`/var/log/cloud-init-output.log`で確認できる．）
+  - ※スタックの作成が完了しても，cf テンプレート内の UserData の shell 実行が終わるまで待つ必要があるため注意．（5 分程度待つ．UserData の実行ログは`/var/log/cloud-init-output.log`で確認できる．）
 - EC2 インスタンスにログイン後，インスタンス上に本リポジトリを clone する．
 - `conda activate pytorch`実行後，[`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，EC2 インスタンス上で GPU や pytorch が利用可能であることを確認する．以下のような出力が表示されるはず．
   - pytorch を利用した MNIST の画像分類の学習を行うスクリプト[`./setup/check_vm_env/mnist_example/mnist.py`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/mnist_example/mnist.py)を用意しているため，これを実行しても構わない．
@@ -240,34 +225,34 @@ VSCode のリモート接続機能を利用して，SSM Session Manager Plugin �
 ```
 ==============check cuda==============
 nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2023 NVIDIA Corporation
-Built on Mon_Apr__3_17:16:06_PDT_2023
-Cuda compilation tools, release 12.1, V12.1.105
-Build cuda_12.1.r12.1/compiler.32688072_0
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Tue_Oct_29_23:50:19_PDT_2024
+Cuda compilation tools, release 12.6, V12.6.85
+Build cuda_12.6.r12.6/compiler.35059454_0
 ==============check gpu==============
-Sat Dec 30 08:28:59 2023
-+---------------------------------------------------------------------------------------+
-| NVIDIA-SMI 535.104.12             Driver Version: 535.104.12   CUDA Version: 12.2     |
-|-----------------------------------------+----------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
-|                                         |                      |               MIG M. |
-|=========================================+======================+======================|
-|   0  Tesla T4                       On  | 00000000:00:1E.0 Off |                    0 |
-| N/A   31C    P8               9W /  70W |      0MiB / 15360MiB |      0%      Default |
-|                                         |                      |                  N/A |
-+-----------------------------------------+----------------------+----------------------+
+Sun Apr 27 04:59:53 2025
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       On  |   00000000:00:1E.0 Off |                    0 |
+| N/A   26C    P8              9W /   70W |       1MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
 
-+---------------------------------------------------------------------------------------+
-| Processes:                                                                            |
-|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
-|        ID   ID                                                             Usage      |
-|=======================================================================================|
-|  No running processes found                                                           |
-+---------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
 ==============check torch==============
 if you exec at first time, you might wait for a while...
-torch.__version__: 2.1.0
+torch.__version__: 2.6.0+cu126
 torch.cuda.is_available(): True
 ```
 
@@ -279,7 +264,7 @@ torch.cuda.is_available(): True
 
 VSCode DevContainers と [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の initializeCommand で ECR へのログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWS 公式が提供する ECR 上のイメージ）を pull している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，PyTorch, Tensorflow, MXNet などのフレームワークがプリインストールされたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用するイメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
 
-- VSCode 上で，`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
+- VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
   - [`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
   - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分~20 分程度待つ．
   - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
@@ -288,34 +273,34 @@ VSCode DevContainers と [AWS Deep Learning Containers Images](https://github.co
 ```
 ==============check cuda==============
 nvcc: NVIDIA (R) Cuda compiler driver
-Copyright (c) 2005-2023 NVIDIA Corporation
-Built on Mon_Apr__3_17:16:06_PDT_2023
-Cuda compilation tools, release 12.1, V12.1.105
-Build cuda_12.1.r12.1/compiler.32688072_0
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Tue_Oct_29_23:50:19_PDT_2024
+Cuda compilation tools, release 12.6, V12.6.85
+Build cuda_12.6.r12.6/compiler.35059454_0
 ==============check gpu==============
-Sat Dec 30 08:12:03 2023
-+---------------------------------------------------------------------------------------+
-| NVIDIA-SMI 535.104.12             Driver Version: 535.104.12   CUDA Version: 12.2     |
-|-----------------------------------------+----------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
-|                                         |                      |               MIG M. |
-|=========================================+======================+======================|
-|   0  Tesla T4                       On  | 00000000:00:1E.0 Off |                    0 |
-| N/A   31C    P8               9W /  70W |      0MiB / 15360MiB |      0%      Default |
-|                                         |                      |                  N/A |
-+-----------------------------------------+----------------------+----------------------+
+Sun Apr 27 04:57:38 2025
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       On  |   00000000:00:1E.0 Off |                    0 |
+| N/A   29C    P8             13W /   70W |       1MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
 
-+---------------------------------------------------------------------------------------+
-| Processes:                                                                            |
-|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
-|        ID   ID                                                             Usage      |
-|=======================================================================================|
-|  No running processes found                                                           |
-+---------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
 ==============check torch==============
 if you exec at first time, you might wait for a while...
-torch.__version__: 2.1.0
+torch.__version__: 2.6.0+cu126
 torch.cuda.is_available(): True
 ```
 
@@ -365,6 +350,10 @@ torch.cuda.is_available(): True
 
 - EC2 インスタンスの以下のパスにログが出力される
   - `/var/log/cloud-init-output.log`
+
+#### Ruff が動作しない場合
+
+- VSCode 上で`F1`を押下し，`Python: Select Interpreter`を選択し，利用する Python のパスが適切に設定されているかを確認する．
 
 ## 参考
 
