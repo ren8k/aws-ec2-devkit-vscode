@@ -240,6 +240,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 - EC2 インスタンス作成時，以下を自動実行している
   - git のアップグレード
   - UV のインストール
+  - venv の仮想環境の activate
 - CloudFormation の出力部には，インスタンス ID と Key ID を出力している
   - 後述の shell で利用する
 
