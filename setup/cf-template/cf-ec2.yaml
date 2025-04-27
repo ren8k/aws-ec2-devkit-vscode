@@ -111,8 +111,8 @@ Resources:
         echo install uv
         curl -LsSf https://astral.sh/uv/install.sh | sh
 
-        echo activate pytorch venv
-        source /opt/pytorch/bin/activate
+        echo add pytorch venv activation to user profile
+        echo "source /opt/pytorch/bin/activate" >> /home/ubuntu/.bashrc
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2
