@@ -1,6 +1,7 @@
 # VSCode Dev Containers を利用した AWS EC2 上での開発環境構築手順<!-- omit in toc -->
 
 本リポジトリでは，Windows・Mac・Linux PC 上の Visual Studio Code IDE (VSCode) から AWS EC2 へリモート接続し，VSCode Dev Containers を利用して深層学習や LLM アプリケーション開発を効率良く行えるようにするための手順を示す．
+
 なお，本リポジトリはチーム開発時に，所属チームへクラウドネイティブで効率的な開発手法を導入することを目的としており，python コーディングにおける linter, formatter や VSCode extension，setting.json なども共通のものを利用するようにしている．
 
 ## TL;DR <!-- omit in toc -->
@@ -9,7 +10,7 @@
 
 - AWS Systems Manager (SSM) 経由で VSCode から EC2 にセキュアに SSH 接続する方法
 - チーム開発時の IDE として VSCode を利用し，uv，Ruff，mypy を共通的に利用する方法
-- AWS Deep Learning Containers Images をベースに Dev Containers 上で開発するための方法
+- AWS Deep Learning Containers Images 等をベースに Dev Containers 上で開発する方法
 
 ## 目次<!-- omit in toc -->
 
@@ -24,7 +25,8 @@
   - [3. ローカルの VSCode に extension をインストール](#3-ローカルの-vscode-に-extension-をインストール)
   - [4. CloudFormation で EC2 を構築](#4-cloudformation-で-ec2-を構築)
     - [構築するリソース](#構築するリソース)
-    - [EC2 の環境について](#ec2-の環境について)
+    - [EC2 の仕様について](#ec2-の仕様について)
+    - [cf テンプレート利用時の入力パラメータについて](#cf-テンプレート利用時の入力パラメータについて)
     - [cf テンプレートの簡易説明](#cf-テンプレートの簡易説明)
   - [5. SSH の設定](#5-ssh-の設定)
   - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
@@ -34,7 +36,7 @@
   - [インスタンスの起動・停止](#インスタンスの起動停止)
   - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
   - [チームでの EC2 の運用・管理](#チームでの-ec2-の運用管理)
-  - [その他 Tips](#その他-tips)
+  - [Tips](#tips)
     - [VSCode Extension](#vscode-extension)
     - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
     - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
@@ -63,9 +65,9 @@ AWS Cloud9 や SageMaker AI Studio Code Editor のようなクラウドネイテ
 
 深層学習モデル開発，LLM API を利用したアプリケーション開発，SageMaker Pipelines 開発など，用途別に Dev Containers の環境を用意している．これらの環境では，基本的には Python パッケージ管理には uv，Formatter や Linter には Ruff を利用しており，git や aws cli が利用可能である．
 
-- cpu-uv: LLM API を利用したアプリケーション開発を想定．軽量な Docker イメージを利用している．
-- gpu-uv: 深層学習モデル開発を想定．CUDA や cuDNN がセットアップされている．
-- gpu-sagemaker: SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)をベースとしたコンテナであり，PyTorch がプリインストールされている．
+- [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．軽量な Docker イメージを利用している．
+- [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv): 深層学習モデル開発を想定．CUDA や cuDNN がセットアップされている．
+- [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker): SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)をベースとしたコンテナであり，PyTorch がプリインストールされている．
 
 ## 前提
 
@@ -197,7 +199,7 @@ Zscaler を利用してプロキシエージェント経由で通信を行う場
 
 <img src="./img/cf-ec2-architecture.png" width="500">
 
-#### EC2 の環境について
+#### EC2 の仕様について
 
 Deep Learning 用の AMI を利用しているため，以下が全てインストールされている状態で EC2 が構築される．詳細な仕様は，本 AWS ドキュメント[^5-1] [^5-2]を参照されたい．
 
@@ -209,11 +211,20 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 - NVIDIA driver (570.86.15)
 - CUDA, cuDNN (12.6)
 - PyTorch (2.6)
+- uv
+
+#### cf テンプレート利用時の入力パラメータについて
+
+| パラメータ名      | 説明                                  | デフォルト値                                                                  |
+| ----------------- | ------------------------------------- | ----------------------------------------------------------------------------- |
+| `EC2InstanceType` | 利用する EC2 のインスタンスタイプ     | `g4dn.xlarge` (GPU インスタンス)，`m5.large`などの CPU インスタンスも設定可能 |
+| `ImageId`         | 利用する EC2 の AMI の種類            | `Deep Learning OSS Nvidia Driver AMI GPU PyTorch 2.6 (Ubuntu 22.04)`          |
+| `SubnetId`        | インターネット接続可能なサブネット ID | 指定必須（不明な場合は default VPC のパブリックサブネットを利用）             |
+| `VolumeSize`      | EC2 のボリュームサイズ                | 100GB                                                                         |
+| `VPCId`           | 利用するサブネットが属する VPC の ID  | 指定必須（不明な場合は default VPC を利用）                                   |
 
 #### cf テンプレートの簡易説明
 
-- VPC とサブネット ID をユーザー側で記述する必要がある
-  - default VPC のパブリックサブネット等を選択すれば良い
 - EC2 へのリモートアクセス・開発に必要と想定されるポリシーをアタッチしたロールは自動作成される．以下のポリシーをアタッチしている．
   - AmazonSSMManagedInstanceCore
   - AmazonS3FullAccess
@@ -246,8 +257,8 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
   - SubnetID: 利用するパブリックサブネットの ID（デフォルト VPC のパブリックサブネット ID 等で問題ない）
   - VPCId: 利用する VPC の ID（デフォルト VPC の ID 等で問題ない）
   - VolumeSize: ボリュームサイズ．デフォルトは 100GB
-- 適切な IAM Role をアタッチし，次へを押下（一時的に Admin role で実施しても良いかもしれない）
-- 作成されるまで 30 秒~1 分ほど待つ
+- 適切な IAM Role をアタッチし，次へを押下（一時的に AdministratorAccess を付与したロールを利用しても良い）
+- 作成されるまで 5 分ほど待つ
 
 </details>
 <br/>
@@ -258,15 +269,15 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 ### 6. VSCode から EC2 インスタンスにログイン
 
-VSCode のリモート接続機能を利用して，SSM Session Manager Plugin 経由で EC2 インスタンスに SSH でログインする．
+VSCode のリモート接続機能を利用して，SSM Session Manager Plugin 経由で EC2 インスタンスに SSH でログインする．以下，CloudFormation により EC2 の構築が完了している前提で説明する．
 
 - VSCode 上で，`F1`を押下し，`Remote-SSH: Connect to Host...`を選択
 - `~/.ssh/config`に記述したホスト名を選択（デフォルトでは`ec2`となっている）
-- リモート側の初期設定が終わるまで 30 秒程度待つ．（Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること）
-  - ※スタックの作成が完了しても，cf テンプレート内の UserData の shell 実行が終わるまで待つ必要があるため注意．（5 分程度待つ．UserData の実行ログは`/var/log/cloud-init-output.log`で確認できる．）
+- Select the platform of the remtoe host "ec2" という画面が出たら`Linux`を選択すること
+  - ※スタックの作成が完了しても，cf テンプレート内の UserData の shell 実行が終わるまで待つ必要があるため注意．（CloudFormation の実行完了後， 2, 3 分程度待つこと．UserData の実行ログは`/var/log/cloud-init-output.log`で確認できる．）
 - EC2 インスタンスにログイン後，インスタンス上に本リポジトリを clone する．
-- `conda activate pytorch`実行後，[`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，EC2 インスタンス上で GPU や pytorch が利用可能であることを確認する．以下のような出力が表示されるはず．
-  - pytorch を利用した MNIST の画像分類の学習を行うスクリプト[`./setup/check_vm_env/mnist_example/mnist.py`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/mnist_example/mnist.py)を用意しているため，これを実行しても構わない．
+- [`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，EC2 インスタンス上で GPU や pytorch が利用可能であることを確認する．以下のような出力が表示されるはずである．
+  - PyTorch を利用した MNIST の画像分類の学習を行うスクリプト[`./setup/check_vm_env/mnist_example/mnist.py`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/mnist_example/mnist.py)を用意しているため，これを実行しても構わない．
 
 ```
 ==============check cuda==============
@@ -304,45 +315,73 @@ torch.cuda.is_available(): True
 
 ### 7. EC2 インスタンスに VSCode extension をインストール
 
-[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストールを行う．なお，コード実行時，Git の設定で利用する名前とメールアドレスをコマンドから入力すること．
+[`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストール，VSCode の setting.json の設定を行う．なお，shell 実行時，Git の設定で利用する名前とメールアドレスをコマンドから入力すること．
 
 ### 8. Dev Containers を利用したコンテナの構築
 
-VSCode Dev Containers と [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築する．[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の initializeCommand で ECR へのログインを行うことで，[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)（AWS 公式が提供する ECR 上のイメージ）を pull している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)では，PyTorch, Tensorflow, MXNet などのフレームワークがプリインストールされたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用するイメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
+- VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択する．
+- 本リポジトリ上では，以下の 3 つの選択肢が表示されるため，用途別にコンテナ環境を選択すること．
+  - [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．
+  - [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv): 深層学習モデル開発を想定．
+  - [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker): SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．
 
-- VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択し，Dev Containers を構築
-  - [`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
-  - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分~20 分程度待つ．
-  - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
-- [`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，コンテナ内で GPU や pytorch が利用可能であることを確認する．本リポジトリの設定だと以下のように表示される．
+以下に利用時の注意点を示す．
+
+- `devcontainer.json`の 2 行目の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
+- 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分程度待つ．
+- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境フォルダ以外は削除して問題ない．
+
+以下に，各コンテナ利用時の簡易説明を行う．
 
 <details>
-<summary>cpu-uv の場合</summary>
+<summary>cpu-uv</summary>
 <br/>
 
-aaa
+- Python パッケージ管理には uv，Linter や Linter には Ruff を利用している．
+- Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
+- `uv add <パッケージ名>` でパッケージを install 可能．
+- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+- `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
 
 </details>
 <br/>
 
 <details>
-<summary>gpu-uv の場合</summary>
+<summary>gpu-uv</summary>
 <br/>
 
-TODO: nvcc -V, nvidia-smi の実行結果を貼る．
-TODO: uv で torch をどのように install するかも書いとく．
+- Python パッケージ管理には uv，Linter や Linter には Ruff を利用している．
+- Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
+- `uv add <パッケージ名>` でパッケージを install 可能．
+- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+- `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
+  - 例えば，PyTorch などを install する場合，[`uv add torch torchvision`](https://docs.astral.sh/uv/guides/install-python/) を実行する．
+- CUDA のバージョンは以下．
+
+```
+$ nvcc -V
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Fri_Feb_21_20:23:50_PST_2025
+Cuda compilation tools, release 12.8, V12.8.93
+Build cuda_12.8.r12.8/compiler.35583870_0
+```
 
 </details>
 <br/>
 
 <details>
-<summary>gpu-sagemaker の場合</summary>
+<summary>gpu-sagemaker</summary>
 <br/>
 
-aaa
-
-</details>
-<br/>
+- [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)は，PyTorch, Tensorflow, MXNet などのフレームワークがプリインストールされたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用するイメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
+- Python パッケージ管理には pip，Linter や Linter には Ruff を利用している．pip を利用している理由は，本コンテナの利用は，pip 経由でプリインストールされている PyTorch などをクイックに利用することを想定しているためである．
+- Dockerfile 内部では， AWS CLI v2 のインストールを行っている．
+- devcontainer.json では以下の処理を行っている．
+  - `initializeCommand`で， ECR へのログイン
+  - `features`で，non-root ユーザーの作成
+  - `remote`で，コンテナにおけるプロセス実行ユーザーを指定
+- [`./setup/check_vm_env/check_cuda_torch.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/check_vm_env/check_cuda_torch.sh)を実行し，コンテナ内で GPU や PyTorch が利用可能であることを確認する．
 
 ```
 ==============check cuda==============
@@ -378,6 +417,9 @@ torch.__version__: 2.6.0+cu126
 torch.cuda.is_available(): True
 ```
 
+</details>
+<br/>
+
 ## その他
 
 ### インスタンスの起動・停止
@@ -392,19 +434,18 @@ torch.cuda.is_available(): True
 
 インスタンスの切り忘れ防止のために，AWS Lambda を利用して，夜 12 時に全ての EC2 インスタンスを停止させている．なお，運用サーバーなど特定のインスタンスは除外可能にできるようにしている．詳細は，[./docs/operation_ec2.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/operation_ec2.md)を参照されたい．
 
-### その他 Tips
+### Tips
 
 #### VSCode Extension
 
 - Git 運用は，インストールした extension の Git Graph を利用することで，GUI で行うことができる．
 - Docker コンテナ運用は，Dev Containers を利用することで，GUI で行うことができる．
-- [`./.devcontainer/Dockerfile`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/Dockerfile)の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
+- gpu-sagemaker において，Dockerfile の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
   - ECR で利用可能なイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
   - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
-    - Dev Containers の`remoteUser` property を，[`./.devcontainer/devcontainer.json`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/.devcontainer/devcontainer.json)に追記しても良い．詳細は，VSCode の公式ドキュメント[^5-3]を参照されたい．
-    - non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` で設定することも可能である．詳細や使用例は，公式実装[^6]や技術ブログ[^7]を参照されたい．
+- non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
 - EC2 インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
   - `ec2-farm`を開き，右クリックで EC2 を起動 or 停止が可能
 - リモートの Dev Container 環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
@@ -438,5 +479,5 @@ torch.cuda.is_available(): True
 [^5-1]: [AWS Deep Learning AMI GPU PyTorch 2.6 (Ubuntu 22.04)](https://aws.amazon.com/jp/releasenotes/aws-deep-learning-ami-gpu-pytorch-2-6-ubuntu-22-04/)
 [^5-2]: [AWS Deep Learning AMIs](hhttps://docs.aws.amazon.com/ja_jp/dlami/latest/devguide/dlami-dg.pdf)
 [^5-3]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
-[^6]: [Dev Containers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
+[^6]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
 [^7]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
