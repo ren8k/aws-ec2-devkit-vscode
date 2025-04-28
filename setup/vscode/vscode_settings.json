@@ -5,27 +5,31 @@
       "path": "/bin/bash"
     }
   },
+  // notebook
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.fixAll": "explicit",
+    "notebook.source.organizeImports": "explicit"
+  },
   // python
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.fixAll": "explicit", // fix lint violations on-save
+      "source.organizeImports": "explicit" // organize imports on-save
     }
   },
-  // python interpreter (pytorch env in ec2-ml-ami)
-  "python.defaultInterpreterPath": "/opt/conda/envs/pytorch/bin/python",
-  // formatter
-  "isort.args": ["--profile", "black"],
-  // linter
-  "flake8.args": ["--max-line-length=88", "--ignore=E203,W503,W504"],
   "mypy-type-checker.args": [
     "--ignore-missing-imports",
     "--disallow-untyped-defs"
   ],
-  // coding visibility
+  "python.defaultInterpreterPath": "/opt/pytorch/bin/python", // pytorch env in ec2-ml-ami
+  "python.analysis.typeCheckingMode": "basic",
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.completeFunctionParens": true,
+  // visibility
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   // markdown
