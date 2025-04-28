@@ -38,7 +38,8 @@
   - [チームでの EC2 の運用・管理](#チームでの-ec2-の運用管理)
   - [Tips](#tips)
     - [VSCode Extension](#vscode-extension)
-    - [CPU インスタンスで開発したい場合](#cpu-インスタンスで開発したい場合)
+    - [Dockerfile](#dockerfile)
+    - [CPU インスタンスで開発する場合](#cpu-インスタンスで開発する場合)
     - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
     - [Ruff が動作しない場合](#ruff-が動作しない場合)
 - [参考](#参考)
@@ -449,14 +450,8 @@ torch.cuda.is_available(): True
 
 #### VSCode Extension
 
-- Git 運用は，インストールした extension の Git Graph を利用することで，GUI で行うことができる．
-- Docker コンテナ運用は，Dev Containers を利用することで，GUI で行うことができる．
-- gpu-sagemaker において，Dockerfile の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
-  - ECR で利用可能なイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
-  - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
-    - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
-  - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
-- non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
+- Git 運用は，`Git Graph` を利用することで，GUI で行うことができる．
+- Docker コンテナ運用は，`Dev Containers` を利用することで，GUI で行うことができる．
 - EC2 インスタンスの起動や停止は，ローカルの VSCode にインストールした extension の`ec2-farm`で行える．
   - `ec2-farm`を開き，右クリックで EC2 を起動 or 停止が可能
 - リモートの Dev Container 環境への接続は，ローカルの VSCode にインストールした extension の`Project Manager`で行える．
@@ -464,11 +459,20 @@ torch.cuda.is_available(): True
   - `Project Manager`を開き，Save Project (小さいディスクのアイコン) を選択し，Dev Container 環境を登録（任意の名前で保存可能）
   - 次回以降は，`ec2-farm`で EC2 を起動後，`Project Manager`に表示された Dev Container 名を選択することで，ssh 接続および Dev Container 起動と接続までが一度に実行可能
 
-#### CPU インスタンスで開発したい場合
+#### Dockerfile
+
+- gpu-sagemaker において，Dockerfile の 1 行目で指定しているイメージを適宜変更することで，利用するモデルに応じた環境を容易に構築することができる．
+  - ECR で利用可能なイメージは，[本リンク](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を参照されたい．
+  - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
+    - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
+  - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
+- non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
+
+#### CPU インスタンスで開発する場合
 
 - EC2 インスタンスのインスタンスタイプを，`m5.xlarge`などに変更する
   - 利用している AMI では GPU インスタンス以外は非推奨だが，問題なく動作した
-- `.devcontainer/devcontainer.json`の 12 行目と 13 行目をコメントアウトする
+- gpu-sagemaker の`.devcontainer/devcontainer.json`の 9 行目と 14 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
 
