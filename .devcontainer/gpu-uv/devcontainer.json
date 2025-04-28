@@ -19,7 +19,7 @@
     "UV_COMPILE_BYTECODE": "1",
     "UV_LINK_MODE": "copy"
   },
-  "postCreateCommand": "uv sync --frozen && . .venv/bin/activate",
+  "postCreateCommand": "uv sync --frozen && . .venv/bin/activate && uv add pre-commit && uv run pre-commit install",
   // Configure tool-specific properties.
   "customizations": {
     // Configure properties specific to VS Code.
