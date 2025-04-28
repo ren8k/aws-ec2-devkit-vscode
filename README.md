@@ -439,7 +439,7 @@ torch.cuda.is_available(): True
 
 ### コーディングガイドラインと開発環境の設定
 
-チーム開発において VSCode を利用するメリットは，Linter や Formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって開発効率が向上すると考えられる．詳細は，[./docs/coding-guidelines.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/coding-guidelines.md)を参照されたい．
+チーム開発において VSCode を利用するメリットは，Linter や Formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって開発効率が向上すると考えられる．また，pre-commit を利用し Git コミットする直前に Ruff や mypy による Lint，Format，型のチェックを行っている．詳細は，[./docs/coding-guidelines.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/coding-guidelines.md)を参照されたい．
 
 ### チームでの EC2 の運用・管理
 
