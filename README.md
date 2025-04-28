@@ -49,13 +49,13 @@
 
 また，LLM API を利用したアプリケーションをチームで開発する際，社内プロキシが原因で開発が非効率になる課題がある．具体的には，SSL 証明書関連のエラーに苦労することや，リモートリポジトリを利用できず，コードのバージョン管理や共有ができないことがある．
 
-その他，チームの各メンバが利用する開発環境が統一化されていない場合，チームとしての開発効率が低下してしまう課題がある．特に，利用する OS や Python パッケージ管理ツール，Linter，Formatter が異なる場合，コードの一貫性が失われ，レビュープロセスが複雑化する．加え，環境の違いによりメンバ間での実行結果の再現性が損なわれる．
+その他，チームの各メンバが利用する開発環境が統一化されていない場合，チームとしての開発効率が低下してしまう課題がある．特に，利用する OS や Python パッケージ管理ツール，Linter，Formatter が異なる場合，コードの一貫性が失われ，レビュープロセスが複雑化する．加え，環境の違いによりメンバ間でのコードの実行結果の再現性が損なわれる．
 
 AWS Cloud9 や SageMaker AI Studio Code Editor のようなクラウドネイティブ IDE を利用することで，上記の課題を解消することは可能である．しかし，ローカルの VSCode と比較すると，これらのサービスには慣れや経験が必須である．また，Dev Containers などの VSCode の Extensions を利用することはできず，CLI ベースで Docker を利用する必要がある．そのため，初学者や新規参画者には敷居が高く，即時参画には時間を要してしまう課題がある．
 
 ## 目的
 
-ローカル PC 上の VSCode から，VSCode Remote SSH により，SSM Session Manager Plugin 経由で EC2 インスタンスにログインし，EC2 上で開発できるようにする．その際，AWS Deep Learning AMIs を利用する．また，VSCode Dev Containers を利用し，開発環境を統一化する．これにより，開発環境の構築を自動化し，メンバ間での実行結果の再現性を担保する．また，社内プロキシ起因の課題を回避し，CodeCommit などのセキュアなリポジトリサービスを利用することができる．
+ローカル PC 上の VSCode から，VSCode Remote SSH により，SSM Session Manager Plugin 経由で EC2 インスタンスにログインし，EC2 上で開発できるようにする．その際，AWS Deep Learning AMIs を利用する．また，VSCode Dev Containers を利用し，開発環境をコンテナとして統一化する．これにより，開発環境の構築を自動化し，メンバ間でのコードの実行結果の再現性を担保する．また，社内プロキシ起因の課題を回避し，CodeCommit などのセキュアなリポジトリサービスを利用することができる．
 
 また，チーム開発で利用する IDE として VSCode を利用し，Python パッケージ管理ツール，Linter，Formatter，Extensions を統一化する．これにより，チームとしてのコーディングスタイルの統一化，コードの可動性や一貫性の向上を狙う．また，VSCode の Extensions である Dev Containers や Git Graph を利用することで，初学者には敷居の高い docker コマンドや git コマンドを利用せず，容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにする．
 
@@ -63,11 +63,13 @@ AWS Cloud9 や SageMaker AI Studio Code Editor のようなクラウドネイテ
 
 ## オリジナリティ
 
-深層学習モデル開発，LLM API を利用したアプリケーション開発，SageMaker Pipelines 開発など，用途別に Dev Containers の環境を用意している．これらの環境では，基本的には Python パッケージ管理には uv，Formatter や Linter には Ruff を利用しており，git や aws cli が利用可能である．
+深層学習モデル開発，LLM API を利用したアプリケーション開発，SageMaker Pipelines 開発など，用途別に Dev Containers の環境を用意している．これらの環境では，基本的には Python パッケージ管理には uv，Formatter や Linter には Ruff を利用しており，git や aws cli が利用可能である．加え，Dev Containers を利用しているので Cline や Amazon Q Developer などの VSCode Extensions をコンテナ内でセキュアに利用することが可能である．
 
-- [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．軽量な Docker イメージを利用している．
-- [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv): 深層学習モデル開発を想定．CUDA や cuDNN がセットアップされている．
-- [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker): SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)をベースとしたコンテナであり，PyTorch がプリインストールされている．
+| コンテナ名                                                                                            | 用途                                            | 特徴                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv)               | LLM API を利用したアプリケーション開発を想定    | - 軽量な Docker イメージを利用 <br> - uv や Ruff を利用可能                                                                                                                 |
+| [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv)               | 深層学習モデル開発                              | - CUDA や cuDNN がセットアップ済み <br> - uv や Ruff を利用可能                                                                                                             |
+| [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker) | SageMaker Pipeline の開発や Training Job の実行 | - [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md) を利用 <br> - PyTorch がプリインストール済み (pip) |
 
 ## 前提
 
@@ -478,7 +480,7 @@ torch.cuda.is_available(): True
 [^3]: [CA 証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
 [^4]: [Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
 [^5-1]: [AWS Deep Learning AMI GPU PyTorch 2.6 (Ubuntu 22.04)](https://aws.amazon.com/jp/releasenotes/aws-deep-learning-ami-gpu-pytorch-2-6-ubuntu-22-04/)
-[^5-2]: [AWS Deep Learning AMIs](hhttps://docs.aws.amazon.com/ja_jp/dlami/latest/devguide/dlami-dg.pdf)
+[^5-2]: [AWS Deep Learning AMIs](https://docs.aws.amazon.com/ja_jp/dlami/latest/devguide/dlami-dg.pdf)
 [^5-3]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
 [^6]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
 [^7]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
