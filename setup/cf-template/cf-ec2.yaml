@@ -4,7 +4,7 @@ Parameters:
   ImageId:
     Description: Amazon Machine Image (AMI)
     Type: String
-    Default: ami-09829527b1a93f365
+    Default: ami-09c1f9fce82b9f2af
   EC2InstanceType:
     Description: EC2 instance type on which IDE runs
     Type: String
@@ -44,6 +44,7 @@ Resources:
         - arn:aws:iam::aws:policy/SecretsManagerReadWrite
         - arn:aws:iam::aws:policy/AWSLambda_FullAccess
         - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
       RoleName: !Sub ${AWS::StackName}-cf-remote-development-role
       Tags:
         - Key: Name
@@ -107,21 +108,11 @@ Resources:
         git config --global credential.helper '!aws codecommit credential-helper $@'
         git config --global credential.UseHttpPath true
 
-        echo uninstall awscli v1
-        sudo rm -rf /usr/local/aws
-        sudo rm /usr/local/bin/aws
-        sudo rm -r ~/.aws/
+        echo install uv
+        curl -LsSf https://astral.sh/uv/install.sh | sh
 
-        echo install awscli v2
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-        sudo rm aws/ -r
-        sudo rm awscliv2.zip
-
-        echo init conda
-        conda init bash
-        sudo reboot
+        echo add pytorch venv activation to user profile
+        echo "source /opt/pytorch/bin/activate" >> /home/ubuntu/.bashrc
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2

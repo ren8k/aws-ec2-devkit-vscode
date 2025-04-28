@@ -16,10 +16,8 @@ git config --global credential.UseHttpPath true
 ## python
 code --install-extension ms-python.python
 code --install-extension ms-python.vscode-pylance
-code --install-extension ms-python.black-formatter
-code --install-extension ms-python.flake8
-code --install-extension ms-python.isort
 code --install-extension ms-python.mypy-type-checker
+code --install-extension charliermarsh.ruff
 code --install-extension donjayamanne.python-extension-pack
 ## docker
 code --install-extension ms-azuretools.vscode-docker
@@ -50,6 +48,8 @@ code --install-extension MS-CEINTL.vscode-language-pack-ja
 code --install-extension github.copilot
 code --install-extension github.copilot-chat
 code --install-extension amazonwebservices.aws-toolkit-vscode
+code --install-extension amazonwebservices.amazon-q-vscode
+code --install-extension saoudrizwan.claude-dev
 
 # vscode settings
 cp vscode_settings.json ~/.vscode-server/data/Machine/settings.json

@@ -1,5 +1,6 @@
-import boto3
 import os
+
+import boto3
 
 # env_var-> EXCLUDED_INSTANCE_IDS: <instanceid, instanceid, ...>
 excluded_instance_ids = os.environ['EXCLUDED_INSTANCE_IDS'].split(',')

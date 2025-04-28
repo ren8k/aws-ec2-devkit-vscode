@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.6.17
+    hooks:
+      - id: uv-lock
+        description: "Ensures that the uv.lock file is up-to-date"
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.7
+    hooks:
+      - id: ruff
+        description: "Runs Ruff for Python code linting and static analysis"
+        types_or: [python, pyi, jupyter]
+        args: [--fix, --exit-non-zero-on-fix, --config=pyproject.toml]
+      - id: ruff-format
+        description: "Formats Python code using Ruff formatter"
+        types_or: [python, pyi, jupyter]
+        args: [--config=pyproject.toml]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        description: "Performs type checking using mypy"
+        types_or: [python, pyi, jupyter]
+        args: [--config-file=pyproject.toml]
