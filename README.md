@@ -322,7 +322,7 @@ torch.cuda.is_available(): True
 
 ### 8. Dev Containers を利用したコンテナの構築
 
-Dev Containers を利用することで，GUI ベースでコンテナを起動し，コンテナ内で容易に開発することができる．
+Dev Containers を利用することで，GUI でコンテナを起動し，コンテナ内で容易に開発することができる．
 
 - VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択する．
 - 本リポジトリ上では，以下の 3 つの選択肢が表示されるため，用途別にコンテナ環境を選択すること．
@@ -342,11 +342,14 @@ Dev Containers を利用することで，GUI ベースでコンテナを起動�
 <summary>cpu-uv</summary>
 <br/>
 
-- Python パッケージ管理には uv，Linter や Linter には Ruff を利用している．
+- Python パッケージ管理には uv，Linter や Formatter には Ruff を利用している．
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
+- `uv remove <パッケージ名>` でパッケージを uninstall 可能．
 - Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.10 && uv sync`
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
+  - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
 
 </details>
 <br/>
@@ -355,12 +358,15 @@ Dev Containers を利用することで，GUI ベースでコンテナを起動�
 <summary>gpu-uv</summary>
 <br/>
 
-- Python パッケージ管理には uv，Linter や Linter には Ruff を利用している．
+- Python パッケージ管理には uv，Linter や Formatter には Ruff を利用している．
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
+- `uv remove <パッケージ名>` でパッケージを uninstall 可能．
 - Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.10 && uv sync`
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
-  - 例えば，PyTorch などを install する場合，[`uv add torch torchvision`](https://docs.astral.sh/uv/guides/install-python/) を実行する．
+  - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
+- PyTorch を install する場合，[`uv add torch torchvision`](https://docs.astral.sh/uv/guides/install-python/) を実行する．
 - CUDA のバージョンは以下．
 
 ```
