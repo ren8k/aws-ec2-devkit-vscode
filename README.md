@@ -322,6 +322,8 @@ torch.cuda.is_available(): True
 
 ### 8. Dev Containers を利用したコンテナの構築
 
+Dev Containers を利用することで，GUI ベースでコンテナを起動し，コンテナ内で容易に開発することができる．
+
 - VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択する．
 - 本リポジトリ上では，以下の 3 つの選択肢が表示されるため，用途別にコンテナ環境を選択すること．
   - [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．
