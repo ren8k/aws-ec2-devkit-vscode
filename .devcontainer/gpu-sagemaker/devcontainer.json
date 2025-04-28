@@ -1,5 +1,5 @@
 {
-  "name": "gpu-sagemaker", // set your pj name
+  "name": "gpu-sagemaker", // [Optional] Your project name here
   "build": {
     "dockerfile": "Dockerfile"
   },
