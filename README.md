@@ -48,7 +48,7 @@
 
 社内のローカル PC 上で，深層学習モデルを開発する際，PoC 毎に環境構築が必要で時間を要してしまう課題がある．例えば，NVIDIA drivers や CUDA，PyTorch などのセットアップに苦労し，本来注力すべき本質的な開発タスクに十分なリソースを割くことができない．
 
-また，LLM API を利用したアプリケーションをチームで開発する際，社内プロキシが原因で開発が非効率になる課題がある．具体的には，SSL 証明書関連のエラーに苦労することや，リモートリポジトリを利用できず，コードのバージョン管理や共有ができないことがある．
+また，LLM API を利用したアプリケーションをチームで開発する際，社内プロキシが原因で開発が非効率になる課題がある．具体的には，SSL 証明書関連のエラーに苦労することや，リモートリポジトリを利用できず，コードのバージョン管理や共有ができないことが多い．
 
 その他，チームの各メンバが利用する開発環境が統一化されていない場合，チームとしての開発効率が低下してしまう課題がある．特に，利用する OS や Python パッケージ管理ツール，Linter，Formatter が異なる場合，コードの一貫性が失われ，レビュープロセスが複雑化する．加え，環境の違いによりメンバ間でのコードの実行結果の再現性が損なわれる．
 
@@ -58,7 +58,7 @@ AWS Cloud9 や SageMaker AI Studio Code Editor のようなクラウドネイテ
 
 ローカル PC 上の VSCode から，VSCode Remote SSH により，SSM Session Manager Plugin 経由で EC2 インスタンスにログインし，EC2 上で開発できるようにする．その際，AWS Deep Learning AMIs を利用する．また，VSCode Dev Containers を利用し，開発環境をコンテナとして統一化する．これにより，開発環境の構築を自動化し，メンバ間でのコードの実行結果の再現性を担保する．また，社内プロキシ起因の課題を回避し，CodeCommit などのセキュアなリポジトリサービスを利用することができる．
 
-また，チーム開発で利用する IDE として VSCode を利用し，Python パッケージ管理ツール，Linter，Formatter，Extensions を統一化する．これにより，チームとしてのコーディングスタイルの統一化，コードの可動性や一貫性の向上を狙う．また，VSCode の Extensions である Dev Containers や Git Graph を利用することで，初学者には敷居の高い docker コマンドや git コマンドを利用せず，容易にコンテナ上での開発や，GUI ベースの Git 運用をできるようにする．
+また，チーム開発で利用する IDE として VSCode を利用し，Python パッケージ管理ツール，Linter，Formatter，Extensions を統一化する．これにより，チームとしてのコーディングスタイルの統一化，コードの可動性や一貫性の向上を狙う．また，VSCode の Extensions である Dev Containers や Git Graph を利用することで，初学者には敷居の高い docker コマンドや git コマンドを利用せず，容易にコンテナ上での開発や，GUI ベースの Git 運用を行えるようにする．
 
 <img src="./img/vscode-ssm-ec2.png" width="500">
 
@@ -440,7 +440,7 @@ torch.cuda.is_available(): True
 
 ### コーディングガイドラインと開発環境の設定
 
-チーム開発において VSCode を利用するメリットは，Linter や Formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって開発効率が向上すると考えられる．また，pre-commit を利用し Git コミットする直前に Ruff や mypy による Lint，Format，型のチェックを行っている．詳細は，[./docs/coding-guidelines.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/coding-guidelines.md)を参照されたい．
+チーム開発において VSCode を利用するメリットは，Linter や Formatter をチームで共通化できる上，IDE の設定や利用する extension なども共通化することができる点である．これにより，チームメンバ間での利用するツールやコーディング上の認識齟齬は低減され，利便性の高い extension によって開発効率が向上する．また，pre-commit を利用し Git コミットする直前に Ruff や mypy による Lint，Format，型のチェックを行っている．詳細は，[./docs/coding-guidelines.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/coding-guidelines.md)を参照されたい．
 
 ### チームでの EC2 の運用・管理
 
@@ -466,7 +466,7 @@ torch.cuda.is_available(): True
   - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
-- non-root user を作成する際，Dockerfile ではなく，`devcontainer` の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
+- non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
 
 #### CPU インスタンスで開発する場合
 
