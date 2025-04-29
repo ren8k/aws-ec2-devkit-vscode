@@ -333,11 +333,11 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 
 以下に利用時の注意点を示す．
 
-- `devcontainer.json`の 2 行目の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
+- `devcontainer.json`の 2 行目の`name`という箇所には，各自のプロジェクト名を記述すること．
 - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分程度待つ．
-- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境フォルダ以外は削除して問題ない．
+- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境 (ディレクトリ) は削除して問題ない．
 
-以下に，各コンテナ利用時の簡易説明を行う．
+以下に，各コンテナの簡易説明を行う．
 
 <details>
 <summary>cpu-uv</summary>
@@ -387,7 +387,7 @@ Build cuda_12.8.r12.8/compiler.35583870_0
 <br/>
 
 - [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)は，PyTorch, Tensorflow, MXNet などのフレームワークがプリインストールされたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用するイメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
-- Python パッケージ管理には pip，Linter や Linter には Ruff を利用している．pip を利用している理由は，本コンテナの利用は，pip 経由でプリインストールされている PyTorch などをクイックに利用することを想定しているためである．
+- Python パッケージ管理には pip，Linter や Formatter には Ruff を利用している．pip を利用している理由は，本コンテナの利用は，pip 経由でプリインストールされている PyTorch などをクイックに利用することを想定しているためである．
 - Dockerfile 内部では， AWS CLI v2 のインストールを行っている．
 - devcontainer.json では以下の処理を行っている．
   - `initializeCommand`で， ECR へのログイン
@@ -444,7 +444,7 @@ torch.cuda.is_available(): True
 
 ### チームでの EC2 の運用・管理
 
-インスタンスの切り忘れ防止のために，AWS Lambda を利用して，夜 12 時に全ての EC2 インスタンスを停止させている．なお，運用サーバーなど特定のインスタンスは除外可能にできるようにしている．詳細は，[./docs/operation_ec2.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/operation_ec2.md)を参照されたい．
+インスタンスの切り忘れ防止のために，AWS Lambda を利用して，夜 12 時に全ての EC2 インスタンスを停止している．なお，運用サーバーなど特定のインスタンスは除外可能にできるようにしている．詳細は，[./docs/operation_ec2.md](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/docs/operation_ec2.md)を参照されたい．
 
 ### Tips
 
