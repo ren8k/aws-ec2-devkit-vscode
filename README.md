@@ -333,11 +333,11 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 
 以下に利用時の注意点を示す．
 
-- `devcontainer.json`の 2 行目の`pj-name`という箇所には，各自のプロジェクト名を記述すること．
+- `devcontainer.json`の 2 行目の`name`という箇所には，各自のプロジェクト名を記述すること．
 - 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分程度待つ．
-- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境フォルダ以外は削除して問題ない．
+- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境 (ディレクトリ) は削除して問題ない．
 
-以下に，各コンテナ利用時の簡易説明を行う．
+以下に，各コンテナの簡易説明を行う．
 
 <details>
 <summary>cpu-uv</summary>
