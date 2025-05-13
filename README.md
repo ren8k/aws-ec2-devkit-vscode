@@ -347,8 +347,8 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
 - `uv remove <パッケージ名>` でパッケージを uninstall 可能．
-- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
-  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.10 && uv sync`
+- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を任意のバージョンに変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.11 && uv sync`を実行する．
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
   - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
 
@@ -363,8 +363,8 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
 - `uv remove <パッケージ名>` でパッケージを uninstall 可能．
-- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
-  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.10 && uv sync`
+- Python のバージョンを変更したい場合，`pyproject.toml`の`requires-python`を任意のバージョンに変更した後，`uv python pin <バージョン>` ，`uv sync`を実行する．
+  - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.11 && uv sync`を実行する．
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
   - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
 - PyTorch を install する場合，[`uv add torch torchvision`](https://docs.astral.sh/uv/guides/install-python/) を実行する．
@@ -467,6 +467,7 @@ torch.cuda.is_available(): True
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
 - non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
+  - gpu-sagemaker の [devcontainer.json](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) では，上記の方法で non-root user を作成している．
 
 #### CPU インスタンスで開発する場合
 
