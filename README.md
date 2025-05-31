@@ -133,7 +133,7 @@ Windows，Linux 上には VSCode は install されているものとする．�
 
 ### 1. AWS CLI のインストールとセットアップ
 
-公式ドキュメント[^1] [^2]を参考に，AWS CLI をインストール，セットアップする．
+公式ドキュメント[^1-1] [^1-2]を参考に，AWS CLI をインストール，セットアップする．
 
 - [Windows 用の AWS CLI MSI インストーラ (64 ビット)](https://awscli.amazonaws.com/AWSCLIV2.msi) をダウンロードして実行する
 - インストール後，`aws --version`でバージョンが表示されれば OK
@@ -160,7 +160,7 @@ Zscaler を利用してプロキシエージェント経由で通信を行う場
 
 **Windows の場合**
 
-公式ドキュメント[^3]を参考に，Zscaler のルート証明書をエクスポートする．
+公式ドキュメント[^1-3]を参考に，Zscaler のルート証明書をエクスポートする．
 
 - コンピュータ証明書の管理 > 信頼されたルート証明機関 > 証明書
 - Zscalar Root CA を左クリック > すべてのタスク > エクスポート
@@ -178,7 +178,7 @@ Zscaler を利用してプロキシエージェント経由で通信を行う場
 
 ### 2. SSM Session Manager plugin のインストール
 
-公式ドキュメント[^4]を参考に，SSM Session Manager plugin をインストールする．
+公式ドキュメント[^2-1]を参考に，SSM Session Manager plugin をインストールする．
 
 - [Session Manager プラグインのインストーラ](https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe)をダウンロードし実行する
 
@@ -204,7 +204,7 @@ Zscaler を利用してプロキシエージェント経由で通信を行う場
 
 #### EC2 の仕様について
 
-Deep Learning 用の AMI を利用しているため，以下が全てインストールされている状態で EC2 が構築される．詳細な仕様は，本 AWS ドキュメント[^5-1] [^5-2]を参照されたい．
+Deep Learning 用の AMI を利用しているため，以下が全てインストールされている状態で EC2 が構築される．詳細な仕様は，本 AWS ドキュメント[^4-1] [^4-2]を参照されたい．
 
 - Git
 - AWS CLI (v2 は `aws2`，v1 は `aws` コマンド)
@@ -344,6 +344,7 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 <br/>
 
 - Python パッケージ管理には uv，Linter や Formatter には Ruff を利用している．
+  - uv の基本的な利用方法は後述するが，詳細な利用方法は，公式ドキュメント [^8-1] や 技術ブログ [^8-2] [^8-3] を参照されたい．
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
 - `uv remove <パッケージ名>` でパッケージを uninstall 可能．
@@ -351,6 +352,7 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
   - Ex. Python 3.11 を利用したい場合: `pyproject.toml`の`requires-python`を`">=3.11"`に変更し，`uv python pin 3.11 && uv sync`を実行する．
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
   - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
+- pre-commit を利用し Git コミットする直前に Ruff や mypy による Lint，Format，型のチェックを行っている．
 
 </details>
 <br/>
@@ -360,6 +362,7 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 <br/>
 
 - Python パッケージ管理には uv，Linter や Formatter には Ruff を利用している．
+  - uv の基本的な利用方法は後述するが，詳細な利用方法は，公式ドキュメント [^8-1] や 技術ブログ [^8-2] [^8-3] を参照されたい．
 - Dockerfile 内部では，sudo を利用可能な一般ユーザーの作成および， AWS CLI v2 のインストールを行っている．
 - `uv add <パッケージ名>` でパッケージを install 可能．
 - `uv remove <パッケージ名>` でパッケージを uninstall 可能．
@@ -368,6 +371,7 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 - `uv run python`コマンド，または，venv の仮想環境を activate した状態で`python`コマンドを利用して，Python コードを実行可能．
   - 仮想環境の activate は`. .venv/bin/activate`コマンドで可能
 - PyTorch を install する場合，[`uv add torch torchvision`](https://docs.astral.sh/uv/guides/install-python/) を実行する．
+- pre-commit を利用し Git コミットする直前に Ruff や mypy による Lint，Format，型のチェックを行っている．
 - CUDA のバージョンは以下．
 
 ```
@@ -466,7 +470,7 @@ torch.cuda.is_available(): True
   - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
-- non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^5-3]や公式リポジトリ[^6]，技術ブログ[^7]を参照されたい．
+- non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^9-1]や公式リポジトリ[^9-2]，技術ブログ[^9-3]を参照されたい．
   - gpu-sagemaker の [devcontainer.json](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) では，上記の方法で non-root user を作成している．
 
 #### CPU インスタンスで開発する場合
@@ -488,12 +492,15 @@ torch.cuda.is_available(): True
 
 ## 参考
 
-[^1]: [AWS CLI の最新バージョンを使用してインストールまたは更新を行う](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
-[^2]: [AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
-[^3]: [CA 証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
-[^4]: [Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
-[^5-1]: [AWS Deep Learning AMI GPU PyTorch 2.6 (Ubuntu 22.04)](https://aws.amazon.com/jp/releasenotes/aws-deep-learning-ami-gpu-pytorch-2-6-ubuntu-22-04/)
-[^5-2]: [AWS Deep Learning AMIs](https://docs.aws.amazon.com/ja_jp/dlami/latest/devguide/dlami-dg.pdf)
-[^5-3]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
-[^6]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
-[^7]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
+[^1-1]: [AWS CLI の最新バージョンを使用してインストールまたは更新を行う](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html)
+[^1-2]: [AWS CLI をセットアップする](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-quickstart.html)
+[^1-3]: [CA 証明書のエクスポート](https://help.zscaler.com/ja/deception/exporting-root-ca-certificate-active-directory-certificate-service)
+[^2-1]: [Windows での Session Manager プラグインのインストール](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/install-plugin-windows.html)
+[^4-1]: [AWS Deep Learning AMI GPU PyTorch 2.6 (Ubuntu 22.04)](https://aws.amazon.com/jp/releasenotes/aws-deep-learning-ami-gpu-pytorch-2-6-ubuntu-22-04/)
+[^4-2]: [AWS Deep Learning AMIs](https://docs.aws.amazon.com/ja_jp/dlami/latest/devguide/dlami-dg.pdf)
+[^8-1]: [uv: Managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
+[^8-2]: [uv だけで Python プロジェクトを管理する](https://zenn.dev/turing_motors/articles/594fbef42a36ee)
+[^8-3]: [uv から始まる Python 開発環境構築](https://zenn.dev/dena/articles/python_env_with_uv)
+[^9-1]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
+[^9-2]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
+[^9-3]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
