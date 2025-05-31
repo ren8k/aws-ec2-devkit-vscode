@@ -31,7 +31,8 @@
   - [5. SSH の設定](#5-ssh-の設定)
   - [6. VSCode から EC2 インスタンスにログイン](#6-vscode-から-ec2-インスタンスにログイン)
   - [7. EC2 インスタンスに VSCode extension をインストール](#7-ec2-インスタンスに-vscode-extension-をインストール)
-  - [8. Dev Containers を利用したコンテナの構築](#8-dev-containers-を利用したコンテナの構築)
+  - [8. 新規プロジェクトを作成](#8-新規プロジェクトを作成)
+  - [9. Dev Containers を利用したコンテナの構築](#9-dev-containers-を利用したコンテナの構築)
 - [その他](#その他)
   - [インスタンスの起動・停止](#インスタンスの起動停止)
   - [コーディングガイドラインと開発環境の設定](#コーディングガイドラインと開発環境の設定)
@@ -127,7 +128,8 @@ Windows，Linux 上には VSCode は install されているものとする．�
 5. SSH の設定
 6. VSCode から EC2 インスタンスにログイン
 7. EC2 インスタンスに VSCode extension をインストール
-8. Dev Containers を利用したコンテナの構築
+8. 新規プロジェクトを作成
+9. Dev Containers を利用したコンテナの構築
 
 ## 手順の各ステップの詳細
 
@@ -321,23 +323,45 @@ torch.cuda.is_available(): True
 
 [`./setup/vscode/vscode_vm_setup.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/vscode/vscode_vm_setup.sh)を実行し，EC2 インスタンス上で Git の初期設定と VSCode extension のインストール，VSCode の setting.json の設定を行う．なお，shell 実行時，Git の設定で利用する名前とメールアドレスをコマンドから入力すること．
 
-### 8. Dev Containers を利用したコンテナの構築
+### 8. 新規プロジェクトを作成
 
-Dev Containers を利用することで，GUI でコンテナを起動し，コンテナ内で容易に開発することができる．
+[`./setup/make_new_project.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/make_new_project.sh)を実行し，新規プロジェクトを作成する．新規プロジェクトは，本リポジトリ（テンプレート）を基に作成され，本リポジトリの一つ上の階層に作成される．
 
-- VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択する．
-- 本リポジトリ上では，以下の 3 つの選択肢が表示されるため，用途別にコンテナ環境を選択すること．
-  - [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．
-  - [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv): 深層学習モデル開発を想定．
-  - [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker): SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．
+`./setup/make_new_project.sh`を実行すると，プロジェクト名と，利用するコンテナ環境を選択するように求められる．プロジェクト名は任意の名前を入力すること．入力したプロジェクト名のディレクトリが新規プロジェクトとして作成される．また，コンテナ環境は，以下の 3 つから用途別に選択すること．各コンテナの詳細は後述する．
 
-以下に利用時の注意点を示す．
+- [cpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/cpu-uv): LLM API を利用したアプリケーション開発を想定．
+- [gpu-uv](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-uv): GPU を利用した深層学習モデル開発を想定．
+- [gpu-sagemaker](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer/gpu-sagemaker): SageMaker Pipeline の開発や SageMaker Training Job の実行を想定．
 
-- `devcontainer.json`の 2 行目の`name`という箇所には，各自のプロジェクト名を記述すること．
-- 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，10 分程度待つ．
-- [.devcontainer ディレクトリ](https://github.com/ren8k/aws-ec2-devkit-vscode/tree/main/.devcontainer)内で利用しない環境 (ディレクトリ) は削除して問題ない．
+`./setup/make_new_project.sh`の実行後，作成される新規プロジェクトは以下のようなディレクトリ構成となる．なお，以下では，入力したプロジェクト名を`sample-project`と仮定している．
 
-以下に，各コンテナの簡易説明を行う．
+```
+sample-project/
+├── .devcontainer/            # 選択したDocker環境（cpu-uv、gpu-uv、gpu-sagemaker）の.devcontainerのみをコピー
+│   ├── Dockerfile
+│   └── devcontainer.json     # プロジェクト名が設定済み
+├── .git/                     # Gitリポジトリ（初期化済み）
+├── .gitignore
+├── .pre-commit-config.yaml
+├── README.md                 # プロジェクト名がタイトルに設定
+├── pyproject.toml            # プロジェクト名が設定済み
+├── src/
+│   ├── __init__.py
+│   └── main.py
+└── uv.lock                   # プロジェクト名が設定済み
+```
+
+`./setup/make_new_project.sh`の出力に従い，プロジェクトディレクトリに移動し，VSCode でディレクトリを開く．以下に出力の例を示す．
+
+```
+[INFO] 次のステップ:
+1. cd /path/to/sample-project
+2. VS Code でディレクトリを開く
+3. Dev Container でコンテナを起動する
+4. 開発を開始！
+```
+
+参考に，各コンテナの説明を行う．
 
 <details>
 <summary>cpu-uv</summary>
@@ -436,6 +460,24 @@ torch.cuda.is_available(): True
 </details>
 <br/>
 
+### 9. Dev Containers を利用したコンテナの構築
+
+Dev Containers を利用することで，GUI でコンテナを起動し，コンテナ内で容易に開発することができる．
+
+- VSCode 上で`F1`を押下し，`Dev Container: Reopen in Container`を選択する．
+- 初回のコンテナ構築時は，Docker イメージの pull に時間がかかるため，3~5 分程度待つ．
+
+以下に利用時の注意点を示す．
+
+- コンテナ内での作業ディレクトリは`/workspace`であり，ローカルのプロジェクトディレクトリがマウントされている．
+- コンテナ内での作業ユーザー名は`vscode`であり，sudo 権限を持つ．
+- `devcontainer.json`の 2 行目の`name`には，手順 8 で入力したプロジェクト名が設定されている．
+- コンテナ構築後，remote repository の登録を行うこと．
+  - VSCode 上で`F1`を押下し，`Git: Add Remote`を選択する．
+  - リモートリポジトリの URL を入力する． (CodeCommit の https URL など)
+  - リモート名を入力する．(`origin`などで良い)
+  - リモートリポジトリの登録後，VSCode の左側の Git アイコンをクリックし，コミットやプッシュなどの操作が可能になる．
+
 ## その他
 
 ### インスタンスの起動・停止
@@ -470,14 +512,14 @@ torch.cuda.is_available(): True
   - 例えば，Stable Diffusion 系列のモデルや，Stable Diffusion Web UI などを実行したい場合などは，以下のイメージを指定することで，簡単に環境を構築することができる．
     - `763104351884.dkr.ecr.ap-northeast-1.amazonaws.com/stabilityai-pytorch-inference:2.0.1-sgm0.1.0-gpu-py310-cu118-ubuntu20.04-sagemaker`
   - イメージによっては，non-root user が定義されている可能性がある．その場合，Dockerfile の 12~27 行目はコメントアウトすること（Dockerfile 内では明示的に non-root user を作成している）
-- non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^9-1]や公式リポジトリ[^9-2]，技術ブログ[^9-3]を参照されたい．
+- non-root user を作成する際，Dockerfile ではなく，[`devcontainer.json`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) の `features`の `common-utils` や`remoteUser`で設定することも可能である．詳細や使用例は，公式ドキュメント[^10-1]や公式リポジトリ[^10-2]，技術ブログ[^10-3]を参照されたい．
   - gpu-sagemaker の [devcontainer.json](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/.devcontainer/gpu-sagemaker/devcontainer.json) では，上記の方法で non-root user を作成している．
 
 #### CPU インスタンスで開発する場合
 
 - EC2 インスタンスのインスタンスタイプを，`m5.xlarge`などに変更する
   - 利用している AMI では GPU インスタンス以外は非推奨だが，問題なく動作した
-- gpu-sagemaker の`.devcontainer/devcontainer.json`の 9 行目と 14 行目をコメントアウトする
+- gpu-sagemaker を利用する場合，`.devcontainer/devcontainer.json`の 9 行目と 14 行目をコメントアウトする
   - docker コマンドの引数`--gpus all`を除外する
 - コンテナのリビルドを実行する
 
@@ -501,6 +543,6 @@ torch.cuda.is_available(): True
 [^8-1]: [uv: Managing dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/)
 [^8-2]: [uv だけで Python プロジェクトを管理する](https://zenn.dev/turing_motors/articles/594fbef42a36ee)
 [^8-3]: [uv から始まる Python 開発環境構築](https://zenn.dev/dena/articles/python_env_with_uv)
-[^9-1]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
-[^9-2]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
-[^9-3]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
+[^10-1]: [Add a non-root user to a container](https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user)
+[^10-2]: [github repository: devcontainers / features](https://github.com/devcontainers/features/tree/main/src/common-utils)
+[^10-3]: [devcontainer で X11 forwarding 可能な環境を作る (あと uv と CUDA 環境も構築)](https://zenn.dev/colum2131/articles/c8b053b84ade7f)
