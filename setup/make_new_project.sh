@@ -40,25 +40,25 @@ echo "=========================================="
 while true; do
     echo
     read -r -p "プロジェクト名を入力してください: " PROJECT_NAME
-    
+
     if [[ -z "$PROJECT_NAME" ]]; then
         print_error "プロジェクト名は必須です。"
         continue
     fi
-    
+
     # Check if directory already exists
     PROJECT_DIR="$PARENT_DIR/$PROJECT_NAME"
     if [[ -d "$PROJECT_DIR" ]]; then
         print_error "ディレクトリ '$PROJECT_NAME' は既に存在します。"
         continue
     fi
-    
+
     # Validate project name (allow alphanumeric, hyphens, underscores)
     if [[ ! "$PROJECT_NAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
         print_error "プロジェクト名は英数字、ハイフン、アンダースコアのみ使用できます。"
         continue
     fi
-    
+
     break
 done
 
@@ -71,7 +71,7 @@ echo "3) gpu-sagemaker (GPU環境、SageMaker用)"
 
 while true; do
     read -r -p "選択 (1-3): " ENV_CHOICE
-    
+
     case $ENV_CHOICE in
         1)
             DOCKER_ENV="cpu-uv"
@@ -97,8 +97,7 @@ echo "  Docker環境: $DOCKER_ENV"
 echo
 
 # Confirm before proceeding
-read -p "この設定で続行しますか？ (y/N): " -n 1 -r
-echo
+read -r -p "この設定で続行しますか？ (y/N): " REPLY
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     print_info "キャンセルしました。"
     exit 0
@@ -135,7 +134,8 @@ sed -i "s/\"name\": \"$DOCKER_ENV\"/\"name\": \"$PROJECT_NAME\"/" "$PROJECT_DIR/
 # Update pyproject.toml name
 sed -i "s/name = \"app\"/name = \"$PROJECT_NAME\"/" "$PROJECT_DIR/pyproject.toml"
 
-# Note: uv.lock doesn't need to be updated as it will be regenerated when the project is built
+# Update uv.lock name to match pyproject.toml
+sed -i "s/name = \"app\"/name = \"$PROJECT_NAME\"/" "$PROJECT_DIR/uv.lock"
 
 print_success "プロジェクト '$PROJECT_NAME' が正常に作成されました！"
 print_info "プロジェクトディレクトリ: $PROJECT_DIR"
@@ -143,5 +143,5 @@ echo
 print_info "次のステップ:"
 echo "1. cd $PROJECT_DIR"
 echo "2. VS Code でディレクトリを開く"
-echo "3. Dev Container で再開する"
+echo "3. Dev Container でコンテナを起動する"
 echo "4. 開発を開始！"
