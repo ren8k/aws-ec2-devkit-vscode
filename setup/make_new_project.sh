@@ -137,6 +137,11 @@ sed -i "s/name = \"app\"/name = \"$PROJECT_NAME\"/" "$PROJECT_DIR/pyproject.toml
 # Update uv.lock name to match pyproject.toml
 sed -i "s/name = \"app\"/name = \"$PROJECT_NAME\"/" "$PROJECT_DIR/uv.lock"
 
+print_info "Gitリポジトリを初期化中..."
+
+# Initialize git repository
+cd "$PROJECT_DIR" && git init
+
 print_success "プロジェクト '$PROJECT_NAME' が正常に作成されました！"
 print_info "プロジェクトディレクトリ: $PROJECT_DIR"
 echo
