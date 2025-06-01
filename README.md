@@ -415,7 +415,7 @@ Build cuda_12.8.r12.8/compiler.35583870_0
 <br/>
 
 - [AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)を利用し，コンテナを構築している．[AWS Deep Learning Containers Images](https://github.com/aws/deep-learning-containers/blob/master/available_images.md)は，PyTorch, Tensorflow, MXNet などのフレームワークがプリインストールされたイメージ（SageMaker Training Job での実行環境イメージ）に加え，HuggingFace，StabilityAI のモデルの推論のためのイメージが提供されており，利用するイメージを適宜変更・カスタマイズすることで検証時の環境構築を効率化することができる．
-- Python パッケージ管理には pip，Linter や Formatter には Ruff を利用している．pip を利用している理由は，本コンテナの利用は，pip 経由でプリインストールされている PyTorch などをクイックに利用することを想定しているためである．
+- Python パッケージ管理には pip，Linter や Formatter には Ruff を利用している．pip を利用している理由は，本 Docker イメージで pip 経由でプリインストールされている PyTorch などをクイックに利用することを想定しているためである．
 - Dockerfile 内部では， AWS CLI v2 のインストールを行っている．
 - devcontainer.json では以下の処理を行っている．
   - `initializeCommand`で， ECR へのログイン
