@@ -17,7 +17,8 @@
   ],
   "remoteEnv": {
     "UV_COMPILE_BYTECODE": "1",
-    "UV_LINK_MODE": "copy"
+    "UV_LINK_MODE": "copy",
+    "UV_TORCH_BACKEND": "auto"
   },
   "postCreateCommand": "uv sync --frozen && . .venv/bin/activate && uv add pre-commit && uv run pre-commit install",
   // Configure tool-specific properties.

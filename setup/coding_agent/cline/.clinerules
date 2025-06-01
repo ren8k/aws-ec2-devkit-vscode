@@ -1,0 +1,65 @@
+# 基本設定
+- 出力言語：日本語
+- コードスタイル：PEP 8準拠
+- ドキュメント形式：Markdown
+
+# プロジェクト構造
+- AWS EC2上でVSCode Dev Containersを利用した開発環境のプロジェクト構造：
+```
+- .devcontainer/       # Docker環境設定
+- docs/                # ドキュメント（コーディングガイドライン、運用手順など）
+- src/                 # メインのソースコード
+- pyproject.toml       # プロジェクト設定とパッケージ管理
+- uv.lock              # パッケージのロックファイル
+```
+
+# 技術スタック
+- 言語：Python 3.13
+- パッケージマネージャ：uv
+- Linter/Formatter：Ruff
+- 型チェッカー：mypy
+- フレームワーク：
+  - 深層学習：PyTorch
+  - AWS連携：boto3, sagemaker
+- CI/CD：pre-commit
+- コンテナ：Docker（Dev Containers経由）
+
+# 開発環境
+- AWS EC2（Ubuntu 22.04）
+- VSCode Remote SSH + Dev Containers
+- GPU環境：NVIDIA Driver 570.86.15, CUDA 12.6, cuDNN
+
+# 行動指針
+## タスクの進め方
+1. ユーザの依頼に対して、そのタスクをどのように実現できるか計画を立て、その計画をまずドキュメントにまとめます
+  - ドキュメントは`outputs/cline`にユーザの依頼とそれに対する計画がわかるようにmarkdown形式でまとめます
+  - 再度計画を立てると数＄消費されるのを防ぐため、必ず計画はドキュメントにまとめてください
+  - タスクの分割粒度ですが、各タスクごとにテストコードを記載できる程度の粒度でまとめてください
+  - 注意：ユーザの指示の範囲内のみでタスクを考え、指示を超えた実装内容は絶対に含めないでください
+2. ドキュメントが完成したら、計画の通りにタスクを実装します
+  - タスクのスコープから外れる実装は絶対に行わないでください
+  - タスクの実装が完了したら、必ずテストコードを記載してください
+
+## コード実装
+- 既存のディレクトリ構造を遵守
+- uvを使用してパッケージ管理：`uv add/remove <package>`
+- 仮想環境の使用：`uv run python`または`.venv/bin/activate`
+
+## 静的解析
+- Ruffによるlint/format：プロジェクトルートの`pyproject.toml`設定に従う
+- mypyによる型チェック：プロジェクトルートの`pyproject.toml`設定に従う
+
+## セキュリティ
+- 秘密情報（APIキー、パスワードなど）はコードに直接記述しない
+- AWS Systems Manager Parameter StoreまたはSecrets Managerを使用
+- SSH接続はSSM Session Manager経由で実施
+
+## ドキュメント作成
+- README.mdは既存のフォーマットに従う
+- 技術的な詳細は`docs/`ディレクトリに配置
+- コメントは日本語で記述可能
+
+## エラーハンドリング
+- AWS API呼び出し時は適切な例外処理を実装
+- ネットワークエラーやタイムアウトを考慮
+- エラーメッセージは日本語で分かりやすく記述
