@@ -1,29 +1,39 @@
 #!/bin/bash
 
+# ==============================================================================
 # Claude Code setup script for EC2
 # This script installs Node.js, Claude Code and adds configuration to ~/.profile
+# ==============================================================================
 
+set -e  # Exit on error
+
+# ------------------------------------------------------------------------------
+# Step 1: Install Node.js via nvm
+# ------------------------------------------------------------------------------
 echo "Installing Node.js via nvm..."
 
 # Download and install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
 # Load nvm without restarting the shell
-\. "$HOME/.nvm/nvm.sh"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-# Download and install Node.js
+# Install Node.js
 nvm install 22
 
-# Verify Node.js version
-node -v # Should display "v22.16.0"
-nvm current # Should display "v22.16.0"
+# Verify installation
+echo "Verifying Node.js installation..."
+node -v      # Should display "v22.x.x"
+nvm current  # Should display "v22.x.x"
+npm -v       # Should display npm version
 
-# Verify npm version
-npm -v # Should display "10.9.2"
-
+# ------------------------------------------------------------------------------
+# Step 2: Install Claude Code
+# ------------------------------------------------------------------------------
+echo
 echo "Installing Claude Code..."
 
-# Install Claude Code using npm
 npm install -g @anthropic-ai/claude-code
 
 if [ $? -eq 0 ]; then
@@ -33,6 +43,10 @@ else
     exit 1
 fi
 
+# ------------------------------------------------------------------------------
+# Step 3: Configure Claude Code for AWS Bedrock
+# ------------------------------------------------------------------------------
+echo
 echo "Setting up Claude Code configuration..."
 
 # Check if the configuration already exists
@@ -45,17 +59,22 @@ else
 
 # Claude Code settings
 export CLAUDE_CODE_USE_BEDROCK=1
-# export ANTHROPIC_MODEL="us.anthropic.claude-sonnet-4-20250514-v1:0"
 export ANTHROPIC_MODEL="us.anthropic.claude-opus-4-20250514-v1:0"
+# export ANTHROPIC_MODEL="us.anthropic.claude-sonnet-4-20250514-v1:0"
 export AWS_REGION="us-west-2"
-# export AWS_PROFILE="your-profile"
+# export AWS_PROFILE="your-profile"  # Uncomment if using specific AWS profile
 EOF
 
     echo "Claude Code settings added to ~/.profile"
 fi
 
-# Source ~/.profile to apply the changes
+# ------------------------------------------------------------------------------
+# Step 4: Apply configuration
+# ------------------------------------------------------------------------------
+echo
 echo "Applying configuration..."
 source ~/.profile
 
+echo
 echo "Claude Code setup completed!"
+echo "Run 'claude' to start using Claude Code"
