@@ -16,8 +16,7 @@ echo "Installing Node.js via nvm..."
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
 # Load nvm without restarting the shell
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+\. "$HOME/.nvm/nvm.sh"
 
 # Install Node.js
 nvm install 22
