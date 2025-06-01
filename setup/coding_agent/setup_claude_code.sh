@@ -1,7 +1,25 @@
 #!/bin/bash
 
 # Claude Code setup script for EC2
-# This script installs Claude Code and adds configuration to ~/.profile
+# This script installs Node.js, Claude Code and adds configuration to ~/.profile
+
+echo "Installing Node.js via nvm..."
+
+# Download and install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# Load nvm without restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js
+nvm install 22
+
+# Verify Node.js version
+node -v # Should display "v22.16.0"
+nvm current # Should display "v22.16.0"
+
+# Verify npm version
+npm -v # Should display "10.9.2"
 
 echo "Installing Claude Code..."
 
