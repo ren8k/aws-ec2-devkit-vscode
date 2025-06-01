@@ -1,4 +1,4 @@
-# Claude Code セットアップ
+# Claude Code セットアップ (on EC2)
 
 - `bash setup_claude_code.sh` を実行する
 - `source ~/.profile` を実行する
