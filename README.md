@@ -271,7 +271,7 @@ Deep Learning 用の AMI を利用しているため，以下が全てインス�
 
 ### 5. SSH の設定
 
-[`./setup/get_aws_keypair/get_key_win.bat`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_win.bat)を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linux の場合は[`./setup/get_aws_keypair/get_key_linux.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_linux.sh)を実行すること．なお，実行前に，ソースコードの変数`KEY_ID`と`INSTANCE_ID`には CloudFormation の実行結果の各値を記述すること．
+[`./setup/get_aws_keypair/get_key_win.bat`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_win.bat)を実行し，秘密鍵のダウンロードと`.ssh/config`の設定を自動実行する．Linux の場合は[`./setup/get_aws_keypair/get_key_linux.sh`](https://github.com/Renya-Kujirada/aws-ec2-devkit-vscode/blob/main/setup/ssh/ssh_setup_linux.sh)を実行すること．なお，実行前に，ソースコードの変数`KEY_ID`と`INSTANCE_ID`には CloudFormation の実行結果の各値を記述すること．また，複数台の EC2 を利用する場合，変数`HOST`や`SECRET_KEY`は一意になるように設定すること．
 
 ### 6. VSCode から EC2 インスタンスにログイン
 
