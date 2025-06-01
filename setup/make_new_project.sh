@@ -238,6 +238,15 @@ update_project_files() {
         error_occurred=true
     fi
 
+    # Fix initializeCommand path for gpu-sagemaker environment
+    if [[ "$DOCKER_ENV" == "gpu-sagemaker" ]]; then
+        if ! sed -i "s|\"initializeCommand\": \"bash \${localWorkspaceFolder}/.devcontainer/gpu-sagemaker/init.sh\"|\"initializeCommand\": \"bash \${localWorkspaceFolder}/.devcontainer/init.sh\"|" \
+            "$PROJECT_DIR/.devcontainer/devcontainer.json"; then
+            print_error "gpu-sagemaker用のinitializeCommandパスの更新に失敗しました。"
+            error_occurred=true
+        fi
+    fi
+
     if [[ "$error_occurred" == "true" ]]; then
         return 1
     fi
