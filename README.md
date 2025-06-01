@@ -43,6 +43,7 @@
     - [CPU インスタンスで開発する場合](#cpu-インスタンスで開発する場合)
     - [CloudFormation Template の UserData の実行ログ](#cloudformation-template-の-userdata-の実行ログ)
     - [Ruff が動作しない場合](#ruff-が動作しない場合)
+    - [Coding Agent の利用](#coding-agent-の利用)
 - [参考](#参考)
 
 ## 背景と課題
@@ -531,6 +532,10 @@ Dev Containers を利用することで，GUI でコンテナを起動し，コ�
 #### Ruff が動作しない場合
 
 - VSCode 上で`F1`を押下し，`Python: Select Interpreter`を選択し，利用する Python のパスが適切に設定されているかを確認する．
+
+#### Coding Agent の利用
+
+- [`./setup/coding_agent`](https://github.com/ren8k/aws-ec2-devkit-vscode/blob/main/setup/coding_agent)ディレクトリでは，EC2 で Claude Code や Cline の設定を行うためのファイルを用意している．
 
 ## 参考
 
