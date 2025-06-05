@@ -162,6 +162,9 @@ settings.json は，VSCode の設定ファイルで，エディタの挙動や�
 
 ## 参考
 
-[mlops-starter-sklearn/docs/coding-guidelines.md](https://github.com/Azure/mlops-starter-sklearn/blob/main/docs/coding-guidelines.md)
-
-[Python Coding Best Practices for Researchers](https://cyberagentailab.github.io/BestPracticesForPythonCoding/)
+- [mlops-starter-sklearn/docs/coding-guidelines.md](https://github.com/Azure/mlops-starter-sklearn/blob/main/docs/coding-guidelines.md)
+- [Python Coding Best Practices for Researchers](https://cyberagentailab.github.io/BestPracticesForPythonCoding/)
+- [uv だけで Python プロジェクトを管理する](https://zenn.dev/turing_motors/articles/594fbef42a36ee)
+- [Python パッケージ管理 [uv] 完全入門](https://speakerdeck.com/mickey_kubo/pythonpatukeziguan-li-uv-wan-quan-ru-men)
+- [深層学習を用いた実験における再現可能な環境構築](https://note.com/shunk031/n/n0f0e9e42b5aa)
+- [Anthropic で利用されているモダンな Python 開発のベストプラクティス](https://zenn.dev/yareyare/articles/d67aa75b37537c)
