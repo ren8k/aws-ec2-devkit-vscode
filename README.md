@@ -141,6 +141,7 @@ Windows，Linux 上には VSCode は install されているものとする．�
 - [Windows 用の AWS CLI MSI インストーラ (64 ビット)](https://awscli.amazonaws.com/AWSCLIV2.msi) をダウンロードして実行する
 - インストール後，`aws --version`でバージョンが表示されれば OK
 - `aws configure`を実行し，AWS CLI の設定を行う
+  - リージョンは `ap-northeast-1` を利用する想定である。
 
 ```
 AWS Access Key ID [None]: IAM ユーザーの作成時にダウンロードした csv ファイルに記載
