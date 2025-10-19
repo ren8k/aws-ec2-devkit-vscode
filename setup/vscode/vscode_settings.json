@@ -34,6 +34,7 @@
   "editor.guides.bracketPairs": "active",
   // markdown
   "[markdown]": {
+    "editor.formatOnSave": true,
     "editor.wordWrap": "bounded",
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
