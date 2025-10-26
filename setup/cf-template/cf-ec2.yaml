@@ -97,7 +97,8 @@ Resources:
             Encrypted: "false"
       UserData: !Base64 |
         #!/bin/bash
-        export HOME=/home/ubuntu
+        # Run all setup as ubuntu user
+        sudo -u ubuntu bash << 'EOF'
 
         echo upgrade git
         sudo -E add-apt-repository ppa:git-core/ppa -y
@@ -111,8 +112,17 @@ Resources:
         echo install uv
         curl -LsSf https://astral.sh/uv/install.sh | sh
 
-        echo add pytorch venv activation to user profile
-        echo "source /opt/pytorch/bin/activate" >> /home/ubuntu/.bashrc
+        echo install amazon-q
+        cd /tmp
+        wget https://desktop-release.q.us-east-1.amazonaws.com/latest/amazon-q.deb
+        sudo dpkg -i amazon-q.deb
+        sudo apt-get install -f -y
+        rm amazon-q.deb
+
+        # echo add pytorch venv activation to user profile
+        # echo "source /opt/pytorch/bin/activate" >> /home/ubuntu/.bashrc
+
+        EOF
       Tags:
         - Key: Name
           Value: !Sub ${AWS::StackName}-cf-ec2
