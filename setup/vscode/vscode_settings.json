@@ -32,10 +32,26 @@
   // visibility
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
+  "editor.minimap.maxColumn": 40, // Limit the minimap width to 40 characters
+  "editor.minimap.showSlider": "always", // Always display the scrollbar slider on the minimap
+  "editor.mouseWheelZoom": true, // Allow Ctrl + mouse wheel to adjust text size
+  "workbench.iconTheme": "vscode-icons", // Set icon theme to vscode-icons
+  "workbench.editor.enablePreview": false, // Always open files in a new tab instead of preview mode
+  "workbench.startupEditor": "newUntitledFile", // Start with a blank new file when VSCode launches
   // markdown
   "[markdown]": {
     "editor.formatOnSave": true,
     "editor.wordWrap": "bounded",
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  // common
+  // Customized for Japanese text — includes particles, punctuation, and brackets as separators
+  "editor.wordSeparators": "./\\()\"'-:,.;<>~!@#$%^&*|+=[]{}`~?　、。「」【】『』（）！？てにをはがのともへでや",
+  "editor.wordWrap": "on", // Automatically wrap long lines
+  "files.eol": "\n", // Use LF for line endings
+  "files.autoGuessEncoding": true, // Automatically detect file encoding
+  "files.insertFinalNewline": true, // Ensure a newline is inserted at the end of the file on save
+  "files.trimFinalNewlines": true, // Remove extra blank lines at the end of the file on save
+  "files.trimTrailingWhitespace": true, // Remove trailing spaces at the end of lines on save
+  "emmet.triggerExpansionOnTab": true, // Enable Emmet abbreviation expansion with the Tab key
 }
