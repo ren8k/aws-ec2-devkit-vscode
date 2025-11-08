@@ -24,7 +24,7 @@
     "--ignore-missing-imports",
     "--disallow-untyped-defs"
   ],
-  "python.defaultInterpreterPath": "/opt/pytorch/bin/python", // pytorch env in ec2-ml-ami
+  "python.defaultInterpreterPath": "./venv/bin/python", // pytorch env in ec2-ml-ami
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.variableTypes": true,
