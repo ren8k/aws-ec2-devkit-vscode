@@ -5,6 +5,9 @@
       "path": "/bin/bash"
     }
   },
+  // default formatter
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   // notebook
   "notebook.formatOnSave.enabled": true,
   "notebook.codeActionsOnSave": {
@@ -42,7 +45,7 @@
   "[markdown]": {
     "editor.formatOnSave": true,
     "editor.wordWrap": "bounded",
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // common
   // Customized for Japanese text — includes particles, punctuation, and brackets as separators
@@ -53,5 +56,5 @@
   "files.insertFinalNewline": true, // Ensure a newline is inserted at the end of the file on save
   "files.trimFinalNewlines": true, // Remove extra blank lines at the end of the file on save
   "files.trimTrailingWhitespace": true, // Remove trailing spaces at the end of lines on save
-  "emmet.triggerExpansionOnTab": true, // Enable Emmet abbreviation expansion with the Tab key
+  "emmet.triggerExpansionOnTab": true // Enable Emmet abbreviation expansion with the Tab key
 }
