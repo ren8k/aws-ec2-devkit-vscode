@@ -3,15 +3,15 @@
 # Set variables(cf output)
 KEY_ID="key-XXXXXXXXXXXXXXXXX"
 INSTANCE_ID="i-XXXXXXXXXXXXXXXXX"
-SECRET_KEY="ec2_secret_key.pem"
+HOST="ec2"
+REGION="ap-northeast-1"
+SECRET_KEY="ec2_secret_key_${HOST}.pem"
 KEY_PREFIX="/ec2/keypair"
 SSH_CONFIG="config"
 SSH_CONFIG_DIR="${HOME}/.ssh"
 SSH_CONFIG_PATH="${SSH_CONFIG_DIR}/${SSH_CONFIG}"
 SECRET_KEY_PATH="${SSH_CONFIG_DIR}/${SECRET_KEY}"
-HOST="ec2"
 USER="ubuntu"
-REGION="ap-northeast-1"
 
 echo "Checking and creating .ssh directory if necessary..."
 if [ ! -d $SSH_CONFIG_DIR ]; then
@@ -33,6 +33,7 @@ chmod 600 "${SECRET_KEY_PATH}"
 
 echo "Updating SSH configuration..."
 cat <<EOF >> "${SSH_CONFIG_PATH}"
+# Remote development EC2 machine
 host ${HOST}
     HostName ${INSTANCE_ID}
     Port 22
