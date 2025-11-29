@@ -4,15 +4,15 @@ setlocal enabledelayedexpansion
 REM Set variables(cf output)
 set "KEY_ID=key-XXXXXXXXXXXXXXXXX"
 set "INSTANCE_ID=i-XXXXXXXXXXXXXXXXX"
-set "SECRET_KEY=ec2_secret_key.pem"
+set "HOST=ec2"
+set "REGION=ap-northeast-1"
+set "SECRET_KEY=ec2_secret_key_%HOST%.pem"
 set "KEY_PREFIX=/ec2/keypair"
 set "SSH_CONFIG=config"
 set "SSH_CONFIG_DIR=%USERPROFILE%\.ssh"
 set "SSH_CONFIG_PATH=%SSH_CONFIG_DIR%\%SSH_CONFIG%"
 set "SECRET_KEY_PATH=%SSH_CONFIG_DIR%\%SECRET_KEY%"
-set "HOST=ec2"
 set "USER=ubuntu"
-set "REGION=ap-northeast-1"
 
 REM If not exist "%SSH_CONFIG_DIR%" mkdir "%SSH_CONFIG_DIR%"
 if not exist "%SSH_CONFIG_DIR%" (
@@ -32,6 +32,7 @@ icacls "%SECRET_KEY_PATH%" /grant "%USERNAME%:F"
 REM Postscript ssh config
 echo Updating SSH configuration...
 (
+    echo # Remote development EC2 machine
     echo host %HOST%
     echo    HostName %INSTANCE_ID%
     echo    Port 22
