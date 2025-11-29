@@ -11,6 +11,7 @@ SSH_CONFIG_PATH="${SSH_CONFIG_DIR}/${SSH_CONFIG}"
 SECRET_KEY_PATH="${SSH_CONFIG_DIR}/${SECRET_KEY}"
 HOST="ec2"
 USER="ubuntu"
+REGION="ap-northeast-1"
 
 echo "Checking and creating .ssh directory if necessary..."
 if [ ! -d $SSH_CONFIG_DIR ]; then
@@ -37,7 +38,7 @@ host $HOST
     ServerAliveInterval 60
     ForwardAgent yes
     ForwardX11 yes
-    ProxyCommand bash -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+    ProxyCommand bash -c "aws ssm start-session --region ${REGION} --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
 EOF
 
 echo "Configuration complete."
