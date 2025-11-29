@@ -12,6 +12,7 @@ set "SSH_CONFIG_PATH=%SSH_CONFIG_DIR%\%SSH_CONFIG%"
 set "SECRET_KEY_PATH=%SSH_CONFIG_DIR%\%SECRET_KEY%"
 set "HOST=ec2"
 set "USER=ubuntu"
+set "REGION=ap-northeast-1"
 
 REM If not exist "%SSH_CONFIG_DIR%" mkdir "%SSH_CONFIG_DIR%"
 if not exist "%SSH_CONFIG_DIR%" (
@@ -21,7 +22,7 @@ if not exist "%SSH_CONFIG_DIR%" (
 
 REM Get key pair from parameter store and save to file
 echo Retrieving and saving the secret key...
-aws ssm get-parameter --name "%KEY_PREFIX%/%KEY_ID%" --with-decryption --query "Parameter.Value" --output text > "%SECRET_KEY_PATH%"
+aws ssm get-parameter --region "%REGION%" --name "%KEY_PREFIX%/%KEY_ID%" --with-decryption --query "Parameter.Value" --output text > "%SECRET_KEY_PATH%"
 
 REM Change permission
 echo Setting file permissions...
@@ -41,7 +42,7 @@ echo Updating SSH configuration...
     echo    ServerAliveInterval 60
     echo    ForwardAgent yes
     echo    ForwardX11 yes
-    echo    ProxyCommand C:\Program Files\Amazon\AWSCLIV2\aws.exe ssm start-session --target %%h --document-name AWS-StartSSHSession --parameters "portNumber=%%p"
+    echo    ProxyCommand "C:\Program Files\Amazon\AWSCLIV2\aws.exe" ssm start-session --region %REGION% --target %%h --document-name AWS-StartSSHSession --parameters "portNumber=%%p"
 ) >> "%SSH_CONFIG_PATH%"
 
 echo Configuration complete.

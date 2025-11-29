@@ -21,18 +21,23 @@ if [ ! -d $SSH_CONFIG_DIR ]; then
 fi
 
 echo "Retrieving and saving the secret key..."
-aws ssm get-parameter --name $KEY_PREFIX/$KEY_ID --with-decryption --query "Parameter.Value" --output text >$SECRET_KEY_PATH
+aws ssm get-parameter \
+    --region "${REGION}" \
+    --name "${KEY_PREFIX}/${KEY_ID}" \
+    --with-decryption \
+    --query "Parameter.Value" \
+    --output text > "${SECRET_KEY_PATH}"
 
 echo "Setting permissions for the secret key..."
-chmod 600 $SECRET_KEY_PATH
+chmod 600 "${SECRET_KEY_PATH}"
 
 echo "Updating SSH configuration..."
-cat <<EOF >>$SSH_CONFIG_PATH
-host $HOST
-    HostName $INSTANCE_ID
+cat <<EOF >> "${SSH_CONFIG_PATH}"
+host ${HOST}
+    HostName ${INSTANCE_ID}
     Port 22
-    User $USER
-    IdentityFile $SECRET_KEY_PATH
+    User ${USER}
+    IdentityFile ${SECRET_KEY_PATH}
     TCPKeepAlive yes
     IdentitiesOnly yes
     ServerAliveInterval 60
