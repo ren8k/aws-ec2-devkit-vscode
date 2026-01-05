@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "uv pytest",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "module": "pytest",
+      "args": ["--cov", "--cov-branch", "-v", "-s"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "uv debugger",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Streamlit Debug",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "module": "streamlit",
+      "console": "integratedTerminal",
+      "args": ["run", "${file}", "--server.port", "8080"],
+      "cwd": "${workspaceFolder}/"
+    }
+  ]
+}

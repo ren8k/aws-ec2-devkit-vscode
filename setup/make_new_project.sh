@@ -185,8 +185,14 @@ copy_template_files() {
     fi
 
     # Copy src directory
-    if ! cp -r "$TEMPLATE_ROOT/src" "$PROJECT_DIR/"; then
-        print_error "srcディレクトリのコピーに失敗しました。"
+    # if ! cp -r "$TEMPLATE_ROOT/src" "$PROJECT_DIR/"; then
+    #     print_error "srcディレクトリのコピーに失敗しました。"
+    #     error_occurred=true
+    # fi
+
+    # Copy .vscode directory
+    if ! cp -r "$TEMPLATE_ROOT/.vscode" "$PROJECT_DIR/"; then
+        print_error ".vscodeディレクトリのコピーに失敗しました。"
         error_occurred=true
     fi
 
