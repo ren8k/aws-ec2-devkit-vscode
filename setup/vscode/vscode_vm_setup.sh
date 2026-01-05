@@ -18,6 +18,7 @@ code --install-extension ms-python.python
 code --install-extension ms-python.vscode-pylance
 code --install-extension ms-python.mypy-type-checker
 code --install-extension charliermarsh.ruff
+code --install-extension astral-sh.ty
 code --install-extension donjayamanne.python-extension-pack
 ## docker
 code --install-extension ms-azuretools.vscode-docker
