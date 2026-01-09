@@ -23,10 +23,11 @@
       "source.organizeImports": "explicit" // organize imports on-save
     }
   },
-  "mypy-type-checker.args": [
-    "--ignore-missing-imports",
-    "--disallow-untyped-defs"
-  ],
+  "python.languageServer": "None", // for ty
+  // "mypy-type-checker.args": [
+  //   "--ignore-missing-imports",
+  //   "--disallow-untyped-defs"
+  // ],
   "python.defaultInterpreterPath": "./venv/bin/python", // pytorch env in ec2-ml-ami
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.inlayHints.functionReturnTypes": true,
