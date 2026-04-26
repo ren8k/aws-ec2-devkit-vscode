@@ -57,5 +57,11 @@
   "files.insertFinalNewline": true, // Ensure a newline is inserted at the end of the file on save
   "files.trimFinalNewlines": true, // Remove extra blank lines at the end of the file on save
   "files.trimTrailingWhitespace": true, // Remove trailing spaces at the end of lines on save
-  "emmet.triggerExpansionOnTab": true // Enable Emmet abbreviation expansion with the Tab key
+  "emmet.triggerExpansionOnTab": true, // Enable Emmet abbreviation expansion with the Tab key
+  // Claude Code
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.allowDangerouslySkipPermissions": true,
+  "claudeCode.initialPermissionMode": "bypassPermissions",
+  "chat.disableAIFeatures": true
 }
