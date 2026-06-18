@@ -58,6 +58,7 @@
   "files.trimFinalNewlines": true, // Remove extra blank lines at the end of the file on save
   "files.trimTrailingWhitespace": true, // Remove trailing spaces at the end of lines on save
   "emmet.triggerExpansionOnTab": true, // Enable Emmet abbreviation expansion with the Tab key
+  "window.nativeTabs": true, // Use macOS native tabs for window management
   // Claude Code
   "claudeCode.preferredLocation": "panel",
   "claudeCode.disableLoginPrompt": true,
